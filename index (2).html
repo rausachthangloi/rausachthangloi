@@ -1,0 +1,1280 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cửa Hàng Rau Sạch Thắng Lợi - Quản Lý & Bán Hàng</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Be Vietnam Pro -->
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- React & ReactDOM CDN -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <!-- Babel for JSX compilation -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                        },
+                        accent: {
+                            500: '#f97316',
+                            600: '#ea580c',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Be Vietnam Pro', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Be Vietnam Pro', sans-serif; }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #888; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #555; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useMemo } = React;
+
+        // Dữ liệu sản phẩm mẫu ban đầu
+        const INITIAL_PRODUCTS = [
+            { id: 'SP01', name: 'Rau Cải Thìa Hữu Cơ', category: 'rau-la', price: 22000, unit: 'Túi 500g', stock: 45, minStock: 10, image: 'https://images.unsplash.com/photo-1628773822503-930a8586f1e1?auto=format&fit=crop&w=400&q=80', desc: 'Rau cải thìa trồng theo tiêu chuẩn VIETGAP không hóa chất độc hại.' },
+            { id: 'SP02', name: 'Cà Rốt Đà Lạt Fresh', category: 'cu-qua', price: 28000, unit: 'Kg', stock: 8, minStock: 15, image: 'https://images.unsplash.com/photo-1598170845058-12ef4a457939?auto=format&fit=crop&w=400&q=80', desc: 'Cà rốt giòn ngọt, giàu Vitamin A, thu hoạch tươi mỗi ngày.' },
+            { id: 'SP03', name: 'Táo Red Delicious', category: 'trai-cay', price: 65000, unit: 'Kg', stock: 30, minStock: 10, image: 'https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?auto=format&fit=crop&w=400&q=80', desc: 'Táo nhập khẩu tươi ngon, vỏ mỏng, nhiều nước, vị ngọt dịu.' },
+            { id: 'SP04', name: 'Combo Rau Lẩu Gia Đình', category: 'combo', price: 89000, unit: 'Combo', stock: 12, minStock: 5, image: 'https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=400&q=80', desc: 'Gồm cải cúc, nấm kim针, rau muống, ngô ngọt và rau mồng tơi.' },
+            { id: 'SP05', name: 'Hành Lá & Rau Thơm', category: 'gia-vi', price: 10000, unit: 'Túi 200g', stock: 50, minStock: 15, image: 'https://images.unsplash.com/photo-1615485290382-441e4d049cb5?auto=format&fit=crop&w=400&q=80', desc: 'Hành lá, ngò rí, tía tô tươi xanh đậm đà hương vị.' },
+            { id: 'SP06', name: 'Bắp Cải Trái Tim', category: 'rau-la', price: 25000, unit: 'Cái (~1kg)', stock: 20, minStock: 8, image: 'https://images.unsplash.com/photo-1594282486552-05b4d80fbb9f?auto=format&fit=crop&w=400&q=80', desc: 'Bắp cải cuộn chặt, lá cuốn bọc ngọt mát tự nhiên.' },
+            { id: 'SP07', name: 'Cà Rách (Cà Chua Bi)', category: 'cu-qua', price: 35000, unit: 'Hộp 500g', stock: 5, minStock: 10, image: 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?auto=format&fit=crop&w=400&q=80', desc: 'Cà chua bi đường ngọt mọng nước, ăn sống hoặc làm salad.' },
+            { id: 'SP08', name: 'Cam Sành Tiền Giang', category: 'trai-cay', price: 42000, unit: 'Kg', stock: 65, minStock: 20, image: 'https://images.unsplash.com/photo-1611080626919-7cf5a9dbab5b?auto=format&fit=crop&w=400&q=80', desc: 'Cam mọng nước, chuyên làm nước ép bổ sung Vitamin C.' },
+        ];
+
+        // Đơn hàng mẫu ban đầu
+        const INITIAL_ORDERS = [
+            { id: 'DH-1001', customerName: 'Nguyễn Văn An', phone: '0987654321', address: 'Số 15 Ngõ 45 Dương Đức Hiền, Hà Nội', total: 139000, itemsCount: 3, status: 'delivering', date: '2026-11-08 08:30' },
+            { id: 'DH-1002', customerName: 'Trần Thị Mai', phone: '0912345678', address: 'Tòa nhà Green Park, Thuận An, Hà Nội', total: 215000, itemsCount: 4, status: 'pending', date: '2026-11-08 09:15' },
+            { id: 'DH-1003', customerName: 'Lê Hoàng Nam', phone: '0905112233', address: 'Số 88 Thuận An, TP Hà Nội', total: 89000, itemsCount: 1, status: 'completed', date: '2026-11-07 16:40' },
+        ];
+
+        // Lịch sử xuất nhập kho mẫu
+        const INITIAL_STOCK_LOGS = [
+            { id: 'LOG-01', type: 'IN', productId: 'SP01', productName: 'Rau Cải Thìa Hữu Cơ', qty: 50, note: 'Nhập hàng sáng từ trang trại Thuận An', date: '2026-11-08 06:00' },
+            { id: 'LOG-02', type: 'OUT', productId: 'SP02', productName: 'Cà Rốt Đà Lạt Fresh', qty: 10, note: 'Xuất bán lẻ tại cửa hàng', date: '2026-11-08 07:30' },
+        ];
+
+        function App() {
+            // Active Tab State
+            const [activeTab, setActiveTab] = useState('storefront'); // storefront | inventory | delivery | analytics
+
+            // App States
+            const [products, setProducts] = useState(INITIAL_PRODUCTS);
+            const [orders, setOrders] = useState(INITIAL_ORDERS);
+            const [stockLogs, setStockLogs] = useState(INITIAL_STOCK_LOGS);
+            const [cart, setCart] = useState([]);
+            const [searchTerm, setSearchTerm] = useState('');
+            const [selectedCategory, setSelectedCategory] = useState('all');
+            
+            // Modals
+            const [isCartOpen, setIsCartOpen] = useState(false);
+            const [detailProduct, setDetailProduct] = useState(null);
+            const [showToast, setShowToast] = useState(null);
+
+            // Notification Toast helper
+            const notify = (msg, type = 'success') => {
+                setShowToast({ msg, type });
+                setTimeout(() => setShowToast(null), 3000);
+            };
+
+            // Cart Functions
+            const addToCart = (product, quantity = 1) => {
+                if (product.stock <= 0) {
+                    notify('Sản phẩm đã hết hàng trong kho!', 'error');
+                    return;
+                }
+                setCart(prevCart => {
+                    const existing = prevCart.find(item => item.id === product.id);
+                    if (existing) {
+                        return prevCart.map(item => 
+                            item.id === product.id ? { ...item, qty: item.qty + quantity } : item
+                        );
+                    }
+                    return [...prevCart, { ...product, qty: quantity }];
+                });
+                notify(`Đã thêm ${product.name} vào giỏ!`);
+            };
+
+            const updateCartQty = (id, delta) => {
+                setCart(prevCart => {
+                    return prevCart.map(item => {
+                        if (item.id === id) {
+                            const newQty = item.qty + delta;
+                            return newQty > 0 ? { ...item, qty: newQty } : null;
+                        }
+                        return item;
+                    }).filter(Boolean);
+                });
+            };
+
+            const cartTotal = useMemo(() => {
+                return cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+            }, [cart]);
+
+            const cartCount = useMemo(() => {
+                return cart.reduce((sum, item) => sum + item.qty, 0);
+            }, [cart]);
+
+            // Checkout Function
+            const handleCheckout = (orderInfo) => {
+                const newOrder = {
+                    id: `DH-${Math.floor(1000 + Math.random() * 9000)}`,
+                    customerName: orderInfo.name,
+                    phone: orderInfo.phone,
+                    address: orderInfo.address,
+                    total: cartTotal + (orderInfo.shippingFee || 0),
+                    itemsCount: cartCount,
+                    status: 'pending',
+                    date: new Date().toLocaleString('sv-SE').replace(' ', ' ').substring(0, 16)
+                };
+
+                // Trừ tồn kho tự động
+                setProducts(prevProducts => {
+                    return prevProducts.map(p => {
+                        const cartItem = cart.find(c => c.id === p.id);
+                        if (cartItem) {
+                            return { ...p, stock: Math.max(0, p.stock - cartItem.qty) };
+                        }
+                        return p;
+                    });
+                });
+
+                setOrders([newOrder, ...orders]);
+                setCart([]);
+                setIsCartOpen(false);
+                notify('Đặt hàng thành công! Đơn hàng đã gửi tới bộ phận giao hàng.');
+            };
+
+            // Stock Entry Function (Nhập/Xuất kho)
+            const handleStockTransaction = (type, productId, qty, note) => {
+                const numQty = parseInt(qty);
+                if (isNaN(numQty) || numQty <= 0) {
+                    notify('Số lượng không hợp lệ!', 'error');
+                    return;
+                }
+
+                const product = products.find(p => p.id === productId);
+                if (!product) return;
+
+                if (type === 'OUT' && product.stock < numQty) {
+                    notify('Số lượng xuất vượt quá tồn kho hiện tại!', 'error');
+                    return;
+                }
+
+                const updatedStock = type === 'IN' ? product.stock + numQty : product.stock - numQty;
+
+                setProducts(products.map(p => p.id === productId ? { ...p, stock: updatedStock } : p));
+
+                const newLog = {
+                    id: `LOG-${Date.now().toString().slice(-4)}`,
+                    type,
+                    productId,
+                    productName: product.name,
+                    qty: numQty,
+                    note,
+                    date: new Date().toLocaleString('sv-SE').substring(0, 16)
+                };
+
+                setStockLogs([newLog, ...stockLogs]);
+                notify(`Đã cập nhật ${type === 'IN' ? 'Nhập' : 'Xuất'} kho thành công!`);
+            };
+
+            // Cập nhật trạng thái giao hàng
+            const updateOrderStatus = (orderId, newStatus) => {
+                setOrders(orders.map(o => o.id === orderId ? { ...o, status: newStatus } : o));
+                notify(`Đã cập nhật đơn hàng ${orderId}`);
+            };
+
+            return (
+                <div className="flex flex-col min-h-screen">
+                    {/* TOAST NOTIFICATION */}
+                    {showToast && (
+                        <div className={`fixed top-4 right-4 z-50 flex items-center gap-3 px-5 py-3 rounded-xl shadow-xl text-white font-medium transition-all transform translate-y-0 ${showToast.type === 'error' ? 'bg-red-600' : 'bg-brand-600'}`}>
+                            <i className={`fas ${showToast.type === 'error' ? 'fa-exclamation-circle' : 'fa-check-circle'}`}></i>
+                            <span>{showToast.msg}</span>
+                        </div>
+                    )}
+
+                    {/* HEADER */}
+                    <header className="bg-gradient-to-r from-brand-700 via-brand-600 to-emerald-700 text-white shadow-lg sticky top-0 z-40">
+                        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3">
+                            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                                
+                                {/* Logo & Địa chỉ */}
+                                <div className="flex items-center gap-3">
+                                    <div className="bg-white p-2.5 rounded-2xl shadow-inner flex items-center justify-center text-brand-600 text-2xl">
+                                        <i className="fas fa-[#57973d] fa-leaf"></i>
+                                    </div>
+                                    <div>
+                                        <h1 className="text-xl sm:text-2xl font-bold tracking-tight uppercase flex items-center gap-2">
+                                            Rau Sạch Thắng Lợi
+                                            <span className="text-xs bg-amber-400 text-amber-950 font-semibold px-2 py-0.5 rounded-full lowercase">VietGAP</span>
+                                        </h1>
+                                        <p className="text-xs text-brand-100 flex items-center gap-1 mt-0.5">
+                                            <i className="fas fa-location-dot text-amber-300"></i>
+                                            323 Dương Đức Hiền, Xã Thuận An, TP. Hà Nội
+                                        </p>
+                                    </div>
+                                </div>
+
+                                {/* Thanh tìm kiếm & Giỏ hàng */}
+                                <div className="flex items-center gap-3 w-full md:w-auto">
+                                    <div className="relative flex-1 md:w-64">
+                                        <input 
+                                            type="text" 
+                                            placeholder="Tìm rau, củ, quả..."
+                                            value={searchTerm}
+                                            onChange={(e) => setSearchTerm(e.target.value)}
+                                            className="w-full bg-brand-800/50 text-white placeholder-brand-200 border border-brand-500/50 rounded-xl px-3.5 py-1.5 pl-9 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
+                                        />
+                                        <i className="fas fa-search absolute left-3 top-2.5 text-brand-200 text-xs"></i>
+                                    </div>
+
+                                    {/* Nút Giỏ Hàng */}
+                                    <button 
+                                        onClick={() => setIsCartOpen(true)}
+                                        className="relative bg-amber-500 hover:bg-amber-600 text-slate-900 font-semibold px-4 py-1.5 rounded-xl transition flex items-center gap-2 shadow-md shrink-0"
+                                    >
+                                        <i className="fas fa-shopping-basket text-base"></i>
+                                        <span className="hidden sm:inline">Giỏ hàng</span>
+                                        {cartCount > 0 && (
+                                            <span className="bg-red-600 text-white text-xs font-bold rounded-full h-5 min-w-[20px] px-1 flex items-center justify-center border-2 border-white">
+                                                {cartCount}
+                                            </span>
+                                        )}
+                                    </button>
+                                </div>
+                            </div>
+
+                            {/* Navigation Tabs */}
+                            <nav className="flex items-center gap-1 mt-3 overflow-x-auto pt-2 border-t border-brand-500/40 text-sm font-medium no-scrollbar">
+                                <button 
+                                    onClick={() => setActiveTab('storefront')}
+                                    className={`px-4 py-2 rounded-lg transition flex items-center gap-2 shrink-0 ${activeTab === 'storefront' ? 'bg-white text-brand-800 shadow-md font-bold' : 'text-brand-100 hover:bg-brand-600'}`}
+                                >
+                                    <i className="fas fa-store"></i> Gian Bán Hàng
+                                </button>
+                                <button 
+                                    onClick={() => setActiveTab('inventory')}
+                                    className={`px-4 py-2 rounded-lg transition flex items-center gap-2 shrink-0 ${activeTab === 'inventory' ? 'bg-white text-brand-800 shadow-md font-bold' : 'text-brand-100 hover:bg-brand-600'}`}
+                                >
+                                    <i className="fas fa-boxes-stacked"></i> Quản Lý Kho & Xuất Nhập
+                                </button>
+                                <button 
+                                    onClick={() => setActiveTab('delivery')}
+                                    className={`px-4 py-2 rounded-lg transition flex items-center gap-2 shrink-0 relative ${activeTab === 'delivery' ? 'bg-white text-brand-800 shadow-md font-bold' : 'text-brand-100 hover:bg-brand-600'}`}
+                                >
+                                    <i className="fas fa-truck-fast"></i> Theo Dõi Giao Hàng
+                                    {orders.filter(o => o.status === 'pending').length > 0 && (
+                                        <span className="w-2 h-2 rounded-full bg-amber-400"></span>
+                                    )}
+                                </button>
+                                <button 
+                                    onClick={() => setActiveTab('analytics')}
+                                    className={`px-4 py-2 rounded-lg transition flex items-center gap-2 shrink-0 ${activeTab === 'analytics' ? 'bg-white text-brand-800 shadow-md font-bold' : 'text-brand-100 hover:bg-brand-600'}`}
+                                >
+                                    <i className="fas fa-chart-pie"></i> Thống Kê & Tiện Ích
+                                </button>
+                            </nav>
+                        </div>
+                    </header>
+
+                    {/* MAIN CONTENT AREA */}
+                    <main className="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6">
+                        
+                        {/* TAB 1: GIAN BÁN HÀNG */}
+                        {activeTab === 'storefront' && (
+                            <StorefrontView 
+                                products={products}
+                                searchTerm={searchTerm}
+                                selectedCategory={selectedCategory}
+                                setSelectedCategory={setSelectedCategory}
+                                addToCart={addToCart}
+                                setDetailProduct={setDetailProduct}
+                            />
+                        )}
+
+                        {/* TAB 2: QUẢN LÝ KHO */}
+                        {activeTab === 'inventory' && (
+                            <InventoryView 
+                                products={products}
+                                stockLogs={stockLogs}
+                                handleStockTransaction={handleStockTransaction}
+                                setProducts={setProducts}
+                                notify={notify}
+                            />
+                        )}
+
+                        {/* TAB 3: GIAO HÀNG */}
+                        {activeTab === 'delivery' && (
+                            <DeliveryView 
+                                orders={orders}
+                                updateOrderStatus={updateOrderStatus}
+                            />
+                        )}
+
+                        {/* TAB 4: THỐNG KÊ & TIỆN ÍCH */}
+                        {activeTab === 'analytics' && (
+                            <AnalyticsView 
+                                products={products}
+                                orders={orders}
+                            />
+                        )}
+                    </main>
+
+                    {/* CART DRAWER / MODAL */}
+                    {isCartOpen && (
+                        <CartModal 
+                            cart={cart}
+                            cartTotal={cartTotal}
+                            updateCartQty={updateCartQty}
+                            onClose={() => setIsCartOpen(false)}
+                            onCheckout={handleCheckout}
+                        />
+                    )}
+
+                    {/* PRODUCT DETAIL MODAL */}
+                    {detailProduct && (
+                        <ProductDetailModal 
+                            product={detailProduct}
+                            onClose={() => setDetailProduct(null)}
+                            addToCart={addToCart}
+                        />
+                    )}
+
+                    {/* FOOTER */}
+                    <footer className="bg-slate-900 text-slate-400 py-8 border-t border-slate-800 mt-12">
+                        <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8 text-sm">
+                            <div>
+                                <h3 className="text-white font-bold text-base mb-3 flex items-center gap-2">
+                                    <i className="fas fa-leaf text-brand-500"></i> Rau Sạch Thắng Lợi
+                                </h3>
+                                <p className="leading-relaxed">Chuyên cung cấp thực phẩm tươi sạch, rau củ quả an toàn đạt tiêu chuẩn VietGAP. Thu hoạch và giao nhanh trong ngày tại Hà Nội.</p>
+                            </div>
+                            <div>
+                                <h3 className="text-white font-bold text-base mb-3">Thông Tin Liên Hệ</h3>
+                                <p className="mb-2"><i className="fas fa-map-marker-alt text-brand-500 mr-2"></i>323 Dương Đức Hiền, Xã Thuận An, TP. Hà Nội</p>
+                                <p className="mb-2"><i className="fas fa-phone text-brand-500 mr-2"></i>Hotline: 0988.323.323 / 024.323.888</p>
+                                <p><i className="fas fa-envelope text-brand-500 mr-2"></i>Email: rausachthangloi@gmail.com</p>
+                            </div>
+                            <div>
+                                <h3 className="text-white font-bold text-base mb-3">Giờ Mở Cửa</h3>
+                                <p className="mb-2">Thứ 2 - Chủ Nhật: 06:00 - 21:00</p>
+                                <p className="text-xs text-slate-500">Hệ thống giao hàng tươi nhanh trong bán kính 15km quanh khu vực Thuận An, Hà Nội.</p>
+                            </div>
+                        </div>
+                        <div className="text-center text-xs text-slate-600 mt-8 pt-4 border-t border-slate-800">
+                            © 2026 Cửa Hàng Rau Sạch Thắng Lợi. Tất cả quyền được bảo lưu.
+                        </div>
+                    </footer>
+                </div>
+            );
+        }
+
+        // ==========================================
+        // COMPONENT 1: STOREFRONT VIEW
+        // ==========================================
+        function StorefrontView({ products, searchTerm, selectedCategory, setSelectedCategory, addToCart, setDetailProduct }) {
+            const categories = [
+                { id: 'all', name: 'Tất cả sản phẩm', icon: 'fa-border-all' },
+                { id: 'rau-la', name: 'Rau Lá Sạch', icon: 'fa-seedling' },
+                { id: 'cu-qua', name: 'Củ & Quả Fresh', icon: 'fa-carrot' },
+                { id: 'trai-cay', name: 'Trái Cây Tươi', icon: 'fa-apple-whole' },
+                { id: 'gia-vi', name: 'Gia Vị & Nấm', icon: 'fa-pepper-hot' },
+                { id: 'combo', name: 'Combo Tiết Kiệm', icon: 'fa-box-open' },
+            ];
+
+            const filteredProducts = useMemo(() => {
+                return products.filter(p => {
+                    const matchCat = selectedCategory === 'all' || p.category === selectedCategory;
+                    const matchSearch = p.name.toLowerCase().includes(searchTerm.toLowerCase());
+                    return matchCat && matchSearch;
+                });
+            }, [products, selectedCategory, searchTerm]);
+
+            return (
+                <div className="space-y-6">
+                    {/* Banner Giới Thiệu */}
+                    <div className="relative rounded-3xl bg-gradient-to-r from-emerald-600 via-brand-600 to-green-700 text-white p-6 sm:p-8 overflow-hidden shadow-xl">
+                        <div className="relative z-10 max-w-xl">
+                            <span className="bg-amber-400 text-amber-950 font-bold text-xs uppercase px-3 py-1 rounded-full tracking-wider">Nông sản sạch 100%</span>
+                            <h2 className="text-2xl sm:text-4xl font-extrabold mt-3 leading-tight">Tươi Ngon Từ Farm Đến Bữa Ăn Gia Đình</h2>
+                            <p className="text-emerald-100 mt-2 text-sm sm:text-base">Giao nhanh 2H tại khu vực Thuận An & Hà Nội. Đảm bảo an toàn vệ sinh thực phẩm.</p>
+                        </div>
+                        <i className="fas fa-basket-shopping absolute -right-6 -bottom-6 text-white/10 text-9xl pointer-events-none"></i>
+                    </div>
+
+                    {/* Filter Danh Mục */}
+                    <div className="flex items-center gap-2 overflow-x-auto pb-2 no-scrollbar">
+                        {categories.map(cat => (
+                            <button
+                                key={cat.id}
+                                onClick={() => setSelectedCategory(cat.id)}
+                                className={`px-4 py-2.5 rounded-2xl text-sm font-semibold transition-all flex items-center gap-2 shrink-0 shadow-sm border ${
+                                    selectedCategory === cat.id
+                                        ? 'bg-brand-600 text-white border-brand-600 shadow-brand-200'
+                                        : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'
+                                }`}
+                            >
+                                <i className={`fas ${cat.icon}`}></i>
+                                {cat.name}
+                            </button>
+                        ))}
+                    </div>
+
+                    {/* Danh sách sản phẩm */}
+                    {filteredProducts.length === 0 ? (
+                        <div className="text-center py-16 bg-white rounded-3xl border border-dashed border-slate-300">
+                            <i className="fas fa-leaf text-5xl text-slate-300 mb-3"></i>
+                            <p className="text-slate-500 font-medium">Không tìm thấy sản phẩm nào phù hợp!</p>
+                        </div>
+                    ) : (
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                            {filteredProducts.map(product => (
+                                <div key={product.id} className="bg-white rounded-2xl shadow-sm hover:shadow-md border border-slate-100 overflow-hidden flex flex-col group transition duration-300">
+                                    <div className="relative h-48 bg-slate-100 overflow-hidden">
+                                        <img 
+                                            src={product.image} 
+                                            alt={product.name}
+                                            className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+                                            onError={(e) => { e.target.src = 'https://placehold.co/400x300/e2e8f0/64748b?text=Rau+Sạch'; }}
+                                        />
+                                        {product.stock <= 5 && product.stock > 0 && (
+                                            <span className="absolute top-2 left-2 bg-amber-500 text-white text-[10px] font-bold px-2.5 py-1 rounded-full shadow">Sắp hết hàng</span>
+                                        )}
+                                        {product.stock === 0 && (
+                                            <span className="absolute top-2 left-2 bg-red-600 text-white text-[10px] font-bold px-2.5 py-1 rounded-full shadow">Hết hàng</span>
+                                        )}
+                                    </div>
+
+                                    <div className="p-4 flex-1 flex flex-col justify-between">
+                                        <div>
+                                            <h3 
+                                                onClick={() => setDetailProduct(product)}
+                                                className="font-bold text-slate-800 text-base group-hover:text-brand-600 transition cursor-pointer line-clamp-1"
+                                            >
+                                                {product.name}
+                                            </h3>
+                                            <p className="text-xs text-slate-400 mt-1 line-clamp-2">{product.desc}</p>
+                                        </div>
+
+                                        <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
+                                            <div>
+                                                <span className="text-lg font-extrabold text-brand-700">
+                                                    {product.price.toLocaleString('vi-VN')}đ
+                                                </span>
+                                                <span className="text-xs text-slate-400 font-normal"> / {product.unit}</span>
+                                            </div>
+
+                                            <div className="flex gap-1">
+                                                <button 
+                                                    onClick={() => setDetailProduct(product)}
+                                                    className="p-2 rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 text-xs transition"
+                                                    title="Xem chi tiết"
+                                                >
+                                                    <i className="fas fa-eye"></i>
+                                                </button>
+                                                <button 
+                                                    onClick={() => addToCart(product)}
+                                                    disabled={product.stock === 0}
+                                                    className={`p-2 px-3 rounded-xl font-medium text-xs flex items-center gap-1 transition ${
+                                                        product.stock === 0
+                                                            ? 'bg-slate-200 text-slate-400 cursor-not-allowed'
+                                                            : 'bg-brand-600 hover:bg-brand-700 text-white shadow-sm'
+                                                    }`}
+                                                >
+                                                    <i className="fas fa-plus"></i> Thêm
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
+            );
+        }
+
+        // ==========================================
+        // COMPONENT 2: INVENTORY VIEW
+        // ==========================================
+        function InventoryView({ products, stockLogs, handleStockTransaction, setProducts, notify }) {
+            const [selectedProd, setSelectedProd] = useState(products[0]?.id || '');
+            const [transType, setTransType] = useState('IN');
+            const [quantity, setQuantity] = useState(10);
+            const [note, setNote] = useState('');
+
+            // Quick Product Add State
+            const [showAddForm, setShowAddForm] = useState(false);
+            const [newProd, setNewProd] = useState({
+                name: '', category: 'rau-la', price: 20000, unit: 'Kg', stock: 20, minStock: 5, image: '', desc: ''
+            });
+
+            const onSubmitStock = (e) => {
+                e.preventDefault();
+                handleStockTransaction(transType, selectedProd, quantity, note);
+                setNote('');
+            };
+
+            const handleAddNewProduct = (e) => {
+                e.preventDefault();
+                if (!newProd.name) return;
+                const created = {
+                    ...newProd,
+                    id: `SP-${Date.now().toString().slice(-4)}`,
+                    price: Number(newProd.price),
+                    stock: Number(newProd.stock),
+                    minStock: Number(newProd.minStock),
+                    image: newProd.image || 'https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=400&q=80'
+                };
+                setProducts([created, ...products]);
+                setShowAddForm(false);
+                notify('Thêm sản phẩm mới vào hệ thống thành công!');
+            };
+
+            return (
+                <div className="space-y-6">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div>
+                            <h2 className="text-2xl font-bold text-slate-800">Quản Lý Tồn Kho & Xuất Nhập</h2>
+                            <p className="text-sm text-slate-500">Kiểm soát số lượng thực phẩm tại kho 323 Dương Đức Hiền</p>
+                        </div>
+                        <button 
+                            onClick={() => setShowAddForm(!showAddForm)}
+                            className="bg-brand-600 hover:bg-brand-700 text-white font-medium px-4 py-2 rounded-xl text-sm transition flex items-center gap-2 self-start sm:self-auto"
+                        >
+                            <i className="fas fa-plus-circle"></i> {showAddForm ? 'Đóng Form' : 'Thêm Sản Phẩm Mới'}
+                        </button>
+                    </div>
+
+                    {/* Form Thêm SP Mới (Nếu Mở) */}
+                    {showAddForm && (
+                        <div className="bg-white p-6 rounded-2xl shadow-md border border-brand-100">
+                            <h3 className="font-bold text-lg text-brand-800 mb-4">Tạo Mặt Hàng Rau Củ Mới</h3>
+                            <form onSubmit={handleAddNewProduct} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-sm">
+                                <div>
+                                    <label className="block text-slate-600 font-medium mb-1">Tên sản phẩm *</label>
+                                    <input required type="text" className="w-full border rounded-xl p-2.5" placeholder="Ví dụ: Cải Thảo Đà Lạt" value={newProd.name} onChange={e=>setNewProd({...newProd, name: e.target.value})} />
+                                </div>
+                                <div>
+                                    <label className="block text-slate-600 font-medium mb-1">Danh mục</label>
+                                    <select className="w-full border rounded-xl p-2.5" value={newProd.category} onChange={e=>setNewProd({...newProd, category: e.target.value})}>
+                                        <option value="rau-la">Rau Lá Sạch</option>
+                                        <option value="cu-qua">Củ & Quả</option>
+                                        <option value="trai-cay">Trái Cây</option>
+                                        <option value="gia-vi">Gia Vị / Nấm</option>
+                                        <option value="combo">Combo Tiết Kiệm</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label className="block text-slate-600 font-medium mb-1">Giá bán (VNĐ)</label>
+                                    <input type="number" className="w-full border rounded-xl p-2.5" value={newProd.price} onChange={e=>setNewProd({...newProd, price: e.target.value})} />
+                                </div>
+                                <div>
+                                    <label className="block text-slate-600 font-medium mb-1">Đơn vị tính</label>
+                                    <input type="text" className="w-full border rounded-xl p-2.5" placeholder="Kg, Túi 500g..." value={newProd.unit} onChange={e=>setNewProd({...newProd, unit: e.target.value})} />
+                                </div>
+                                <div>
+                                    <label className="block text-slate-600 font-medium mb-1">Số lượng ban đầu</label>
+                                    <input type="number" className="w-full border rounded-xl p-2.5" value={newProd.stock} onChange={e=>setNewProd({...newProd, stock: e.target.value})} />
+                                </div>
+                                <div>
+                                    <label className="block text-slate-600 font-medium mb-1">Mức cảnh báo tồn ít</label>
+                                    <input type="number" className="w-full border rounded-xl p-2.5" value={newProd.minStock} onChange={e=>setNewProd({...newProd, minStock: e.target.value})} />
+                                </div>
+                                <div className="sm:col-span-2">
+                                    <label className="block text-slate-600 font-medium mb-1">URL Hình ảnh minh họa</label>
+                                    <input type="text" className="w-full border rounded-xl p-2.5" placeholder="https://..." value={newProd.image} onChange={e=>setNewProd({...newProd, image: e.target.value})} />
+                                </div>
+                                <div className="sm:col-span-4 flex justify-end gap-3 mt-2">
+                                    <button type="button" onClick={()=>setShowAddForm(false)} className="px-4 py-2 border rounded-xl text-slate-600">Hủy</button>
+                                    <button type="submit" className="px-6 py-2 bg-brand-600 text-white rounded-xl font-semibold hover:bg-brand-700">Lưu Sản Phẩm</button>
+                                </div>
+                            </form>
+                        </div>
+                    )}
+
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        
+                        {/* FORM TẠO PHIẾU XUẤT NHẬP */}
+                        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col justify-between">
+                            <div>
+                                <h3 className="font-bold text-slate-800 text-lg mb-4 flex items-center gap-2">
+                                    <i className="fas fa-file-pen text-brand-600"></i> Tạo Phiếu Xuất / Nhập Kho
+                                </h3>
+                                <form onSubmit={onSubmitStock} className="space-y-4 text-sm">
+                                    <div>
+                                        <label className="block text-xs font-semibold text-slate-500 uppercase mb-1">Loại Phiếu</label>
+                                        <div className="grid grid-cols-2 gap-2">
+                                            <button 
+                                                type="button" 
+                                                onClick={() => setTransType('IN')}
+                                                className={`py-2 rounded-xl font-bold transition border ${transType === 'IN' ? 'bg-emerald-50 text-emerald-700 border-emerald-500' : 'bg-slate-50 text-slate-600 border-slate-200'}`}
+                                            >
+                                                <i className="fas fa-arrow-down-left text-xs mr-1"></i> NHẬP KHO
+                                            </button>
+                                            <button 
+                                                type="button" 
+                                                onClick={() => setTransType('OUT')}
+                                                className={`py-2 rounded-xl font-bold transition border ${transType === 'OUT' ? 'bg-orange-50 text-orange-700 border-orange-500' : 'bg-slate-50 text-slate-600 border-slate-200'}`}
+                                            >
+                                                <i className="fas fa-arrow-up-right text-xs mr-1"></i> XUẤT KHO
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <label className="block text-xs font-semibold text-slate-500 uppercase mb-1">Chọn Sản Phẩm</label>
+                                        <select 
+                                            value={selectedProd} 
+                                            onChange={e=>setSelectedProd(e.target.value)}
+                                            className="w-full border border-slate-200 rounded-xl p-2.5 bg-slate-50 font-medium focus:outline-none focus:ring-2 focus:ring-brand-500"
+                                        >
+                                            {products.map(p => (
+                                                <option key={p.id} value={p.id}>{p.name} (Hiện có: {p.stock} {p.unit})</option>
+                                            ))}
+                                        </select>
+                                    </div>
+
+                                    <div>
+                                        <label className="block text-xs font-semibold text-slate-500 uppercase mb-1">Số Lượng</label>
+                                        <input 
+                                            type="number" 
+                                            min="1"
+                                            value={quantity}
+                                            onChange={e => setQuantity(e.target.value)}
+                                            className="w-full border border-slate-200 rounded-xl p-2.5 bg-slate-50 font-medium"
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <label className="block text-xs font-semibold text-slate-500 uppercase mb-1">Lý Do / Nhà Cung Cấp</label>
+                                        <textarea 
+                                            rows="3"
+                                            placeholder="Ghi chú nguồn nhập hoặc lý do xuất kho..."
+                                            value={note}
+                                            onChange={e => setNote(e.target.value)}
+                                            className="w-full border border-slate-200 rounded-xl p-2.5 bg-slate-50"
+                                        ></textarea>
+                                    </div>
+
+                                    <button 
+                                        type="submit"
+                                        className={`w-full py-3 rounded-xl text-white font-bold transition shadow ${transType === 'IN' ? 'bg-brand-600 hover:bg-brand-700' : 'bg-amber-600 hover:bg-amber-700'}`}
+                                    >
+                                        Xác Nhận {transType === 'IN' ? 'Nhập Kho' : 'Xuất Kho'}
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+
+                        {/* BẢNG TỒN KHO */}
+                        <div className="lg:col-span-2 bg-white rounded-2xl shadow-sm border border-slate-100 p-6 flex flex-col justify-between">
+                            <div>
+                                <h3 className="font-bold text-slate-800 text-lg mb-4 flex items-center justify-between">
+                                    <span><i className="fas fa-list-check text-brand-600 mr-2"></i> Danh Sách Hàng Tồn Kho</span>
+                                    <span className="text-xs text-slate-400 font-normal">Tổng: {products.length} mặt hàng</span>
+                                </h3>
+
+                                <div className="overflow-x-auto">
+                                    <table className="w-full text-left text-sm">
+                                        <thead className="bg-slate-50 text-slate-500 uppercase text-[11px] tracking-wider border-b">
+                                            <tr>
+                                                <th className="p-3">Sản phẩm</th>
+                                                <th className="p-3">Đơn vị</th>
+                                                <th className="p-3">Giá bán</th>
+                                                <th className="p-3 text-center">Tồn kho</th>
+                                                <th className="p-3 text-center">Trạng thái</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody className="divide-y divide-slate-100">
+                                            {products.map(p => {
+                                                const isLow = p.stock <= p.minStock;
+                                                return (
+                                                    <tr key={p.id} className="hover:bg-slate-50 transition">
+                                                        <td className="p-3 font-medium text-slate-800 flex items-center gap-2">
+                                                            <img src={p.image} className="w-8 h-8 rounded-lg object-cover" />
+                                                            <div>
+                                                                <div>{p.name}</div>
+                                                                <div className="text-[10px] text-slate-400">{p.id}</div>
+                                                            </div>
+                                                        </td>
+                                                        <td className="p-3 text-slate-600">{p.unit}</td>
+                                                        <td className="p-3 font-semibold text-slate-700">{p.price.toLocaleString('vi-VN')}đ</td>
+                                                        <td className="p-3 text-center font-bold text-base">
+                                                            <span className={isLow ? 'text-red-600' : 'text-slate-800'}>{p.stock}</span>
+                                                        </td>
+                                                        <td className="p-3 text-center">
+                                                            {p.stock === 0 ? (
+                                                                <span className="bg-red-100 text-red-700 text-xs px-2.5 py-1 rounded-full font-medium">Hết hàng</span>
+                                                            ) : isLow ? (
+                                                                <span className="bg-amber-100 text-amber-800 text-xs px-2.5 py-1 rounded-full font-medium">Sắp hết</span>
+                                                            ) : (
+                                                                <span className="bg-emerald-100 text-emerald-800 text-xs px-2.5 py-1 rounded-full font-medium">An toàn</span>
+                                                            )}
+                                                        </td>
+                                                    </tr>
+                                                );
+                                            })}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    {/* LỊCH SỬ XUẤT NHẬP KHO */}
+                    <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                        <h3 className="font-bold text-slate-800 text-lg mb-4 flex items-center gap-2">
+                            <i className="fas fa-clock-rotate-left text-brand-600"></i> Lịch Sử Giao Dịch Kho Gần Đây
+                        </h3>
+                        <div className="overflow-x-auto">
+                            <table className="w-full text-left text-sm">
+                                <thead className="bg-slate-50 text-slate-500 uppercase text-[11px]">
+                                    <tr>
+                                        <th className="p-3">Mã GD</th>
+                                        <th className="p-3">Loại</th>
+                                        <th className="p-3">Sản phẩm</th>
+                                        <th className="p-3">Số lượng</th>
+                                        <th className="p-3">Ghi chú / Nguồn</th>
+                                        <th className="p-3">Thời gian</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="divide-y divide-slate-100">
+                                    {stockLogs.map(log => (
+                                        <tr key={log.id} className="hover:bg-slate-50">
+                                            <td className="p-3 font-mono text-xs text-slate-500">{log.id}</td>
+                                            <td className="p-3">
+                                                {log.type === 'IN' ? (
+                                                    <span className="bg-emerald-100 text-emerald-700 font-bold text-xs px-2.5 py-1 rounded-md">NHẬP</span>
+                                                ) : (
+                                                    <span className="bg-orange-100 text-orange-700 font-bold text-xs px-2.5 py-1 rounded-md">XUẤT</span>
+                                                )}
+                                            </td>
+                                            <td className="p-3 font-medium text-slate-800">{log.productName}</td>
+                                            <td className="p-3 font-bold">{log.qty}</td>
+                                            <td className="p-3 text-slate-500 text-xs">{log.note || '—'}</td>
+                                            <td className="p-3 text-slate-400 text-xs">{log.date}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        // ==========================================
+        // COMPONENT 3: DELIVERY VIEW
+        // ==========================================
+        function DeliveryView({ orders, updateOrderStatus }) {
+            const getStatusBadge = (status) => {
+                switch (status) {
+                    case 'pending':
+                        return <span className="bg-amber-100 text-amber-800 text-xs px-3 py-1 rounded-full font-bold">Chờ duyệt giao</span>;
+                    case 'delivering':
+                        return <span className="bg-blue-100 text-blue-800 text-xs px-3 py-1 rounded-full font-bold">Đang giao hàng</span>;
+                    case 'completed':
+                        return <span className="bg-emerald-100 text-emerald-800 text-xs px-3 py-1 rounded-full font-bold">Đã hoàn thành</span>;
+                    case 'cancelled':
+                        return <span className="bg-rose-100 text-rose-800 text-xs px-3 py-1 rounded-full font-bold">Đã hủy</span>;
+                    default:
+                        return null;
+                }
+            };
+
+            return (
+                <div className="space-y-6">
+                    <div>
+                        <h2 className="text-2xl font-bold text-slate-800">Theo Dõi & Giao Hàng</h2>
+                        <p className="text-sm text-slate-500">Quản lý lịch trình ship nông sản cho khách hàng khu vực Hà Nội</p>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {orders.map(order => (
+                            <div key={order.id} className="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 flex flex-col justify-between">
+                                <div>
+                                    <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+                                        <span className="font-mono font-bold text-brand-700">{order.id}</span>
+                                        {getStatusBadge(order.status)}
+                                    </div>
+
+                                    <div className="mt-4 space-y-2 text-sm">
+                                        <div className="flex items-start gap-2">
+                                            <i className="fas fa-user text-slate-400 mt-1"></i>
+                                            <span className="font-semibold text-slate-800">{order.customerName}</span>
+                                        </div>
+                                        <div className="flex items-start gap-2">
+                                            <i className="fas fa-phone text-slate-400 mt-1"></i>
+                                            <a href={`tel:${order.phone}`} className="text-brand-600 font-medium hover:underline">{order.phone}</a>
+                                        </div>
+                                        <div className="flex items-start gap-2">
+                                            <i className="fas fa-location-dot text-slate-400 mt-1"></i>
+                                            <span className="text-slate-600">{order.address}</span>
+                                        </div>
+                                        <div className="flex items-center gap-2 pt-2 text-xs text-slate-400">
+                                            <i className="fas fa-clock"></i>
+                                            <span>Thời gian đặt: {order.date}</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="mt-6 pt-3 border-t border-slate-100">
+                                    <div className="flex justify-between items-center mb-4">
+                                        <span className="text-xs text-slate-500">Tổng tiền ({order.itemsCount} sản phẩm):</span>
+                                        <span className="text-base font-extrabold text-amber-600">{order.total.toLocaleString('vi-VN')}đ</span>
+                                    </div>
+
+                                    {/* Action buttons */}
+                                    <div className="grid grid-cols-2 gap-2 text-xs font-semibold">
+                                        {order.status === 'pending' && (
+                                            <>
+                                                <button 
+                                                    onClick={() => updateOrderStatus(order.id, 'delivering')}
+                                                    className="py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-xl transition"
+                                                >
+                                                    <i className="fas fa-motorcycle mr-1"></i> Nhận Giao Hàng
+                                                </button>
+                                                <button 
+                                                    onClick={() => updateOrderStatus(order.id, 'cancelled')}
+                                                    className="py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl transition"
+                                                >
+                                                    Hủy đơn
+                                                </button>
+                                            </>
+                                        )}
+
+                                        {order.status === 'delivering' && (
+                                            <>
+                                                <button 
+                                                    onClick={() => updateOrderStatus(order.id, 'completed')}
+                                                    className="py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl transition col-span-2"
+                                                >
+                                                    <i className="fas fa-check-double mr-1"></i> Xác Nhận Đã Giao
+                                                </button>
+                                            </>
+                                        )}
+
+                                        {order.status === 'completed' && (
+                                            <div className="col-span-2 text-center text-emerald-600 font-semibold py-1 bg-emerald-50 rounded-xl">
+                                                <i className="fas fa-circle-check mr-1"></i> Đơn hàng thành công
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            );
+        }
+
+        // ==========================================
+        // COMPONENT 4: ANALYTICS & UTILITIES VIEW
+        // ==========================================
+        function AnalyticsView({ products, orders }) {
+            const [distanceKm, setDistanceKm] = useState(3);
+            const [promoResult, setPromoResult] = useState('');
+            const [notes, setNotes] = useState([
+                'Nhập thêm 30kg Cải Thìa vào sáng mai 7h.',
+                'Kiểm tra hạn sử dụng lô Cà Rốt Đà Lạt.'
+            ]);
+            const [newNote, setNewNote] = useState('');
+
+            // Calculations
+            const totalRevenue = useMemo(() => {
+                return orders.filter(o => o.status === 'completed').reduce((sum, o) => sum + o.total, 0);
+            }, [orders]);
+
+            const shippingFeeCalc = useMemo(() => {
+                if (distanceKm <= 2) return 15000;
+                return 15000 + Math.ceil(distanceKm - 2) * 5000;
+            }, [distanceKm]);
+
+            const drawPromo = () => {
+                const promos = [
+                    'GIAM10K - Giảm 10.000đ cho đơn từ 100k',
+                    'FREESHIP - Miễn phí vận chuyển bán kính 3km',
+                    'RAUSACH5 - Giảm 5% cho đơn rau lá hữu cơ',
+                    'THANG LOI 2026 - Voucher may mắn 20.000đ'
+                ];
+                const rand = promos[Math.floor(Math.random() * promos.length)];
+                setPromoResult(rand);
+            };
+
+            const addNote = (e) => {
+                e.preventDefault();
+                if (!newNote.trim()) return;
+                setNotes([...notes, newNote]);
+                setNewNote('');
+            };
+
+            return (
+                <div className="space-y-6">
+                    <div>
+                        <h2 className="text-2xl font-bold text-slate-800">Thống Kê & Tiện Ích Cửa Hàng</h2>
+                        <p className="text-sm text-slate-500">Tổng hợp hoạt động kinh doanh và công cụ hỗ trợ bán hàng</p>
+                    </div>
+
+                    {/* Stat Cards */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm flex items-center gap-4">
+                            <div className="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center text-xl shrink-0">
+                                <i className="fas fa-coins"></i>
+                            </div>
+                            <div>
+                                <div className="text-xs text-slate-400 font-medium uppercase">Doanh Thu Đã Duyên</div>
+                                <div className="text-xl font-extrabold text-slate-800">{totalRevenue.toLocaleString('vi-VN')}đ</div>
+                            </div>
+                        </div>
+
+                        <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm flex items-center gap-4">
+                            <div className="w-12 h-12 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center text-xl shrink-0">
+                                <i className="fas fa-receipt"></i>
+                            </div>
+                            <div>
+                                <div className="text-xs text-slate-400 font-medium uppercase">Tổng Đơn Hàng</div>
+                                <div className="text-xl font-extrabold text-slate-800">{orders.length} Đơn</div>
+                            </div>
+                        </div>
+
+                        <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm flex items-center gap-4">
+                            <div className="w-12 h-12 bg-amber-100 text-amber-600 rounded-2xl flex items-center justify-center text-xl shrink-0">
+                                <i className="fas fa-boxes-packing"></i>
+                            </div>
+                            <div>
+                                <div className="text-xs text-slate-400 font-medium uppercase">Sản Phẩm Trong Kho</div>
+                                <div className="text-xl font-extrabold text-slate-800">{products.length} Loại</div>
+                            </div>
+                        </div>
+
+                        <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm flex items-center gap-4">
+                            <div className="w-12 h-12 bg-purple-100 text-purple-600 rounded-2xl flex items-center justify-center text-xl shrink-0">
+                                <i className="fas fa-truck-ramp-box"></i>
+                            </div>
+                            <div>
+                                <div className="text-xs text-slate-400 font-medium uppercase">Đơn Đang Giao</div>
+                                <div className="text-xl font-extrabold text-slate-800">{orders.filter(o=>o.status==='delivering').length} Đơn</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        
+                        {/* TIỆN ÍCH TÍNH SHIP */}
+                        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                            <h3 className="font-bold text-slate-800 text-base mb-4 flex items-center gap-2">
+                                <i className="fas fa-calculator text-brand-600"></i> Tính Phí Ship Theo Km
+                            </h3>
+                            <div className="space-y-4 text-sm">
+                                <div>
+                                    <label className="block text-xs font-semibold text-slate-500 mb-1">Khoảng cách từ 323 Dương Đức Hiền:</label>
+                                    <div className="flex items-center gap-3">
+                                        <input 
+                                            type="range" 
+                                            min="1" 
+                                            max="20" 
+                                            value={distanceKm}
+                                            onChange={e => setDistanceKm(e.target.value)}
+                                            className="w-full accent-brand-600"
+                                        />
+                                        <span className="font-bold text-slate-800 w-12 text-right">{distanceKm} Km</span>
+                                    </div>
+                                </div>
+
+                                <div className="bg-slate-50 p-4 rounded-xl space-y-1">
+                                    <div className="flex justify-between text-xs text-slate-500">
+                                        <span>Phí cố định (&lt;2km):</span>
+                                        <span>15.000đ</span>
+                                    </div>
+                                    <div className="flex justify-between text-xs text-slate-500">
+                                        <span>Phí phát sinh (+5k/km):</span>
+                                        <span>{distanceKm > 2 ? ((distanceKm - 2) * 5000).toLocaleString('vi-VN') : 0}đ</span>
+                                    </div>
+                                    <div className="flex justify-between font-bold text-brand-700 text-base pt-2 border-t border-slate-200">
+                                        <span>Tổng Phí Ship:</span>
+                                        <span>{shippingFeeFee = shippingFeeCalc.toLocaleString('vi-VN')}đ</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* TẠO MÃ KHUYẾN MÃI / LẮC XĂM */}
+                        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col justify-between">
+                            <div>
+                                <h3 className="font-bold text-slate-800 text-base mb-3 flex items-center gap-2">
+                                    <i className="fas fa-gift text-amber-500"></i> Lắc Mã Giảm Giá Cho Khách
+                                </h3>
+                                <p className="text-xs text-slate-500 mb-4">Tạo nhanh mã ưu đãi trực tiếp cho khách mua tại cửa hàng Thuận An.</p>
+                                
+                                {promoResult && (
+                                    <div className="p-4 bg-amber-50 border border-amber-200 rounded-xl text-center mb-4">
+                                        <span className="text-xs font-semibold text-amber-800 block mb-1">Mã ưu đãi nhận được:</span>
+                                        <span className="font-mono font-bold text-amber-600 text-sm">{promoResult}</span>
+                                    </div>
+                                )}
+                            </div>
+
+                            <button 
+                                onClick={drawPromo}
+                                className="w-full py-2.5 bg-amber-500 hover:bg-amber-600 text-slate-900 font-bold rounded-xl text-sm transition"
+                            >
+                                <i className="fas fa-dice mr-2"></i> Lắc Ngay Mã Mới
+                            </button>
+                        </div>
+
+                        {/* GHI CHÚ CÔNG VIỆC */}
+                        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col justify-between">
+                            <div>
+                                <h3 className="font-bold text-slate-800 text-base mb-3 flex items-center gap-2">
+                                    <i className="fas fa-sticky-note text-blue-500"></i> Ghi Chú Nhanh Cửa Hàng
+                                </h3>
+                                
+                                <form onSubmit={addNote} className="flex gap-2 mb-3">
+                                    <input 
+                                        type="text" 
+                                        placeholder="Thêm nhắc nhở..."
+                                        value={newNote}
+                                        onChange={e => setNewNote(e.target.value)}
+                                        className="flex-1 border rounded-xl px-3 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-brand-500"
+                                    />
+                                    <button type="submit" className="bg-slate-800 text-white text-xs px-3 py-1.5 rounded-xl">Thêm</button>
+                                </form>
+
+                                <ul className="space-y-2 text-xs text-slate-600 max-h-36 overflow-y-auto">
+                                    {notes.map((note, idx) => (
+                                        <li key={idx} className="flex items-start gap-2 bg-slate-50 p-2 rounded-lg">
+                                            <i className="fas fa-check text-emerald-500 mt-0.5"></i>
+                                            <span className="flex-1">{note}</span>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            );
+        }
+
+        // ==========================================
+        // COMPONENT 5: CART MODAL / DRAWER
+        // ==========================================
+        function CartModal({ cart, cartTotal, updateCartQty, onClose, onCheckout }) {
+            const [customerInfo, setCustomerInfo] = useState({
+                name: '',
+                phone: '',
+                address: '323 Dương Đức Hiền, Thuận An, Hà Nội',
+                note: ''
+            });
+
+            const handleSubmit = (e) => {
+                e.preventDefault();
+                if (!customerInfo.name || !customerInfo.phone) {
+                    alert('Vui lòng điền tên và số điện thoại nhận hàng!');
+                    return;
+                }
+                onCheckout({ ...customerInfo, shippingFee: 15000 });
+            };
+
+            return (
+                <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex justify-end">
+                    <div className="bg-white w-full max-w-md h-full shadow-2xl flex flex-col justify-between overflow-hidden animate-slide-left">
+                        
+                        {/* Header Drawer */}
+                        <div className="p-4 border-b flex items-center justify-between bg-brand-700 text-white">
+                            <h3 className="font-bold text-lg flex items-center gap-2">
+                                <i className="fas fa-shopping-cart"></i> Giỏ Hàng Của Bạn
+                            </h3>
+                            <button onClick={onClose} className="text-white/80 hover:text-white text-xl">
+                                <i className="fas fa-times"></i>
+                            </button>
+                        </div>
+
+                        {/* List items */}
+                        <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                            {cart.length === 0 ? (
+                                <div className="text-center py-12 text-slate-400">
+                                    <i className="fas fa-basket-shopping text-5xl mb-3"></i>
+                                    <p>Giỏ hàng hiện tại đang trống</p>
+                                </div>
+                            ) : (
+                                cart.map(item => (
+                                    <div key={item.id} className="flex items-center gap-3 p-3 bg-slate-50 rounded-xl border border-slate-100">
+                                        <img src={item.image} alt={item.name} className="w-14 h-14 object-cover rounded-lg" />
+                                        <div className="flex-1">
+                                            <h4 className="font-bold text-slate-800 text-sm">{item.name}</h4>
+                                            <div className="text-xs text-brand-700 font-bold">{item.price.toLocaleString('vi-VN')}đ / {item.unit}</div>
+                                            
+                                            {/* Qty controls */}
+                                            <div className="flex items-center gap-2 mt-2">
+                                                <button onClick={() => updateCartQty(item.id, -1)} className="w-6 h-6 rounded-md bg-white border text-xs font-bold">-</button>
+                                                <span className="text-xs font-bold px-2">{item.qty}</span>
+                                                <button onClick={() => updateCartQty(item.id, 1)} className="w-6 h-6 rounded-md bg-white border text-xs font-bold">+</button>
+                                            </div>
+                                        </div>
+                                        <div className="text-right">
+                                            <span className="font-bold text-sm text-slate-800">
+                                                {(item.price * item.qty).toLocaleString('vi-VN')}đ
+                                            </span>
+                                        </div>
+                                    </div>
+                                ))
+                            )}
+
+                            {cart.length > 0 && (
+                                <form id="checkout-form" onSubmit={handleSubmit} className="pt-4 border-t space-y-3 text-sm">
+                                    <h4 className="font-bold text-slate-800 text-xs uppercase tracking-wider">Thông tin giao hàng</h4>
+                                    <div>
+                                        <input 
+                                            required
+                                            type="text" 
+                                            placeholder="Họ và tên người nhận *" 
+                                            value={customerInfo.name}
+                                            onChange={e => setCustomerInfo({...customerInfo, name: e.target.value})}
+                                            className="w-full border rounded-xl p-2.5 text-xs"
+                                        />
+                                    </div>
+                                    <div>
+                                        <input 
+                                            required
+                                            type="tel" 
+                                            placeholder="Số điện thoại *" 
+                                            value={customerInfo.phone}
+                                            onChange={e => setCustomerInfo({...customerInfo, phone: e.target.value})}
+                                            className="w-full border rounded-xl p-2.5 text-xs"
+                                        />
+                                    </div>
+                                    <div>
+                                        <input 
+                                            type="text" 
+                                            placeholder="Địa chỉ chi tiết tại Hà Nội..." 
+                                            value={customerInfo.address}
+                                            onChange={e => setCustomerInfo({...customerInfo, address: e.target.value})}
+                                            className="w-full border rounded-xl p-2.5 text-xs"
+                                        />
+                                    </div>
+                                </form>
+                            )}
+                        </div>
+
+                        {/* Footer Checkout */}
+                        {cart.length > 0 && (
+                            <div className="p-4 border-t bg-slate-50 space-y-3">
+                                <div className="space-y-1 text-xs">
+                                    <div className="flex justify-between text-slate-500">
+                                        <span>Tạm tính:</span>
+                                        <span>{cartTotal.toLocaleString('vi-VN')}đ</span>
+                                    </div>
+                                    <div className="flex justify-between text-slate-500">
+                                        <span>Phí giao hàng nội thành:</span>
+                                        <span>15.000đ</span>
+                                    </div>
+                                    <div className="flex justify-between font-bold text-base text-slate-900 pt-1 border-t">
+                                        <span>Tổng thanh toán:</span>
+                                        <span className="text-amber-600">{(cartTotal + 15000).toLocaleString('vi-VN')}đ</span>
+                                    </div>
+                                </div>
+
+                                <button 
+                                    type="submit"
+                                    form="checkout-form"
+                                    className="w-full py-3 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl transition shadow-lg text-sm flex items-center justify-center gap-2"
+                                >
+                                    <i className="fas fa-check-circle"></i> Xác Nhận Đặt Hàng
+                                </button>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            );
+        }
+
+        // ==========================================
+        // COMPONENT 6: PRODUCT DETAIL MODAL
+        // ==========================================
+        function ProductDetailModal({ product, onClose, addToCart }) {
+            return (
+                <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+                    <div className="bg-white rounded-3xl max-w-lg w-full overflow-hidden shadow-2xl relative animate-fade-in">
+                        <button 
+                            onClick={onClose}
+                            className="absolute top-3 right-3 bg-white/80 hover:bg-white text-slate-700 w-8 h-8 rounded-full flex items-center justify-center text-sm shadow z-10"
+                        >
+                            <i className="fas fa-times"></i>
+                        </button>
+
+                        <div className="h-64 bg-slate-100 relative">
+                            <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
+                        </div>
+
+                        <div className="p-6 space-y-4">
+                            <div>
+                                <span className="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2.5 py-1 rounded-full uppercase">VietGAP Certified</span>
+                                <h3 className="text-xl font-bold text-slate-800 mt-2">{product.name}</h3>
+                                <p className="text-xs text-slate-400 mt-1">Mã sản phẩm: {product.id}</p>
+                            </div>
+
+                            <p className="text-sm text-slate-600 leading-relaxed">{product.desc}</p>
+
+                            <div className="flex items-center justify-between py-3 border-y border-slate-100">
+                                <div>
+                                    <span className="text-2xl font-extrabold text-brand-700">{product.price.toLocaleString('vi-VN')}đ</span>
+                                    <span className="text-xs text-slate-400"> / {product.unit}</span>
+                                </div>
+                                <div className="text-right text-xs">
+                                    <span className="text-slate-500 block">Tồn kho tại cửa hàng:</span>
+                                    <span className="font-bold text-slate-800">{product.stock} {product.unit}</span>
+                                </div>
+                            </div>
+
+                            <div className="flex gap-3">
+                                <button 
+                                    onClick={() => { addToCart(product); onClose(); }}
+                                    className="flex-1 py-3 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl text-sm transition shadow-md flex items-center justify-center gap-2"
+                                >
+                                    <i className="fas fa-cart-plus"></i> Thêm Vào Giỏ Hàng
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        // Render React App
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
