@@ -1,0 +1,2231 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rau Sạch Thắng Lợi - Nông Sản Chuẩn VietGAP | 323 Dương Đức Hiền, Hà Nội</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            200: '#bbf7d0',
+                            300: '#86efac',
+                            400: '#4ade80',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#14532d',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        .fade-in {
+            animation: fadeIn 0.25s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased selection:bg-brand-200 selection:text-brand-900">
+
+    <!-- TOAST NOTIFICATION CONTAINER -->
+    <div id="toastContainer" class="fixed bottom-5 right-5 z-[100] flex flex-col gap-2 max-w-sm w-full pointer-events-none px-4 sm:px-0"></div>
+
+    <!-- TOP INFO BAR -->
+    <div class="bg-brand-800 text-brand-50 text-xs py-2 px-4">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-1 text-center sm:text-left">
+            <div class="flex items-center gap-2">
+                <i data-lucide="map-pin" class="w-3.5 h-3.5 text-brand-300 shrink-0"></i>
+                <span>323 Dương Đức Hiền, Thuận An, Hà Nội • Mở cửa: 06:00 - 21:00 hằng ngày</span>
+            </div>
+            <div class="flex items-center gap-4">
+                <span class="hidden md:inline-flex items-center gap-1 text-brand-200">
+                    <i data-lucide="shield-check" class="w-3.5 h-3.5"></i> 100% Rau Sạch Chuẩn VietGAP
+                </span>
+                <a href="tel:0988323888" class="font-semibold hover:text-white flex items-center gap-1">
+                    <i data-lucide="phone" class="w-3.5 h-3.5 text-brand-300"></i> Hotline: 0988.323.888
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN NAVBAR -->
+    <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16 sm:h-20 gap-3">
+                <!-- Logo -->
+                <div class="flex items-center gap-2.5 cursor-pointer shrink-0" onclick="switchView('store')">
+                    <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-gradient-to-br from-brand-500 to-brand-700 flex items-center justify-center text-white shadow-md shadow-brand-500/20">
+                        <i data-lucide="sprout" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-lg sm:text-xl font-extrabold text-slate-900 tracking-tight leading-none">
+                            Rau Sạch <span class="text-brand-600">Thắng Lợi</span>
+                        </h1>
+                        <p class="text-[11px] font-medium text-slate-500 mt-0.5">Nông Trại Xanh • Chuẩn VietGAP</p>
+                    </div>
+                </div>
+
+                <!-- Search Bar (Only visible in Store view on desktop, mobile has bar below) -->
+                <div id="desktopSearchWrap" class="hidden md:flex flex-1 max-w-md mx-4">
+                    <div class="relative w-full">
+                        <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+                        <input type="text" id="searchInputDesktop" oninput="handleSearch(this.value)" placeholder="Tìm rau cải, cà chua bi, súp lơ, gia vị..." class="w-full pl-10 pr-4 py-2.5 bg-slate-100 border border-transparent focus:border-brand-500 focus:bg-white rounded-full text-sm transition-all outline-none">
+                    </div>
+                </div>
+
+                <!-- Navigation & Actions -->
+                <div class="flex items-center gap-2 sm:gap-3">
+                    <!-- View Switcher Pills -->
+                    <div class="bg-slate-100 p-1 rounded-xl flex items-center border border-slate-200/80">
+                        <button id="navStoreBtn" onclick="switchView('store')" class="px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all flex items-center gap-1.5 bg-white text-brand-700 shadow-sm">
+                            <i data-lucide="store" class="w-4 h-4"></i>
+                            <span>Cửa Hàng</span>
+                        </button>
+                        <button id="navAdminBtn" onclick="switchView('admin')" class="px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all flex items-center gap-1.5 text-slate-600 hover:text-slate-900">
+                            <i data-lucide="warehouse" class="w-4 h-4"></i>
+                            <span class="hidden sm:inline">Quản Lý Kho</span>
+                            <span class="sm:hidden">Kho</span>
+                            <span id="lowStockBadgeHeader" class="hidden bg-amber-500 text-white text-[10px] font-bold px-1.5 py-0.2 rounded-full">0</span>
+                        </button>
+                    </div>
+
+                    <!-- Order Lookup Button -->
+                    <button onclick="openModal('lookupModal')" title="Tra cứu đơn hàng" class="p-2.5 rounded-xl bg-slate-100 hover:bg-brand-50 text-slate-700 hover:text-brand-700 transition-colors border border-slate-200/60">
+                        <i data-lucide="package-search" class="w-5 h-5"></i>
+                    </button>
+
+                    <!-- Cart Button -->
+                    <button id="cartHeaderBtn" onclick="toggleCartDrawer(true)" class="relative p-2.5 sm:px-4 sm:py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-semibold text-sm transition-all shadow-md shadow-brand-600/20 flex items-center gap-2">
+                        <i data-lucide="shopping-basket" class="w-5 h-5"></i>
+                        <span class="hidden lg:inline">Giỏ Hàng</span>
+                        <span id="cartCountBadge" class="bg-amber-400 text-slate-900 text-xs font-extrabold px-1.5 py-0.5 rounded-full min-w-[20px] text-center">0</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Mobile Search Bar -->
+            <div id="mobileSearchWrap" class="md:hidden pb-3">
+                <div class="relative w-full">
+                    <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+                    <input type="text" id="searchInputMobile" oninput="handleSearch(this.value)" placeholder="Tìm rau sạch VietGAP..." class="w-full pl-10 pr-4 py-2 bg-slate-100 border border-slate-200 focus:border-brand-500 focus:bg-white rounded-xl text-sm outline-none">
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ===================================================================== -->
+    <!-- VIEW 1: STOREFRONT (TRANG CỬA HÀNG KHÁCH HÀNG)                        -->
+    <!-- ===================================================================== -->
+    <main id="storeView" class="fade-in">
+        <!-- Hero Banner -->
+        <section class="relative overflow-hidden bg-gradient-to-br from-brand-900 via-brand-800 to-emerald-900 text-white">
+            <div class="absolute inset-0 opacity-20">
+                <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=1600&q=80" alt="Vườn rau sạch" class="w-full h-full object-cover">
+            </div>
+            <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                    <div class="lg:col-span-7 space-y-5">
+                        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-700/80 border border-brand-400/30 text-brand-100 text-xs sm:text-sm font-medium backdrop-blur-sm">
+                            <span class="w-2 h-2 rounded-full bg-brand-400 animate-pulse"></span>
+                            Thu hoạch sáng sớm tại nông trại • Giao tươi trong 2H
+                        </div>
+                        <h2 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight leading-tight">
+                            Rau Sạch Hữu Cơ <br>
+                            <span class="text-brand-300">Chuẩn VietGAP</span> Cho Mọi Bữa Cơm Gia Đình
+                        </h2>
+                        <p class="text-brand-100/90 text-sm sm:text-base max-w-2xl leading-relaxed">
+                            Cửa hàng <strong class="text-white">Rau Sạch Thắng Lợi</strong> tại <strong class="text-brand-200">323 Dương Đức Hiền, Thuận An, Hà Nội</strong> cam kết 100% nông sản không dư lượng thuốc bảo vệ thực vật, truy xuất nguồn gốc rõ ràng từng luống rau.
+                        </p>
+                        <div class="flex flex-wrap items-center gap-3 pt-2">
+                            <a href="#productsSection" class="px-6 py-3.5 rounded-xl bg-brand-500 hover:bg-brand-400 text-slate-950 font-bold text-sm sm:text-base transition-all shadow-lg shadow-brand-500/30 flex items-center gap-2">
+                                <span>Mua Rau Sạch Ngay</span>
+                                <i data-lucide="arrow-down-right" class="w-5 h-5"></i>
+                            </a>
+                            <button onclick="openModal('traceabilityModal')" class="px-5 py-3.5 rounded-xl bg-white/10 hover:bg-white/20 text-white border border-white/20 font-semibold text-sm sm:text-base transition-all backdrop-blur-sm flex items-center gap-2">
+                                <i data-lucide="qr-code" class="w-5 h-5 text-brand-300"></i>
+                                <span>Truy Xuất Nguồn Gốc</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Hero Feature Cards -->
+                    <div class="lg:col-span-5 grid grid-cols-2 gap-3 sm:gap-4">
+                        <div class="bg-white/10 backdrop-blur-md border border-white/15 p-4 rounded-2xl">
+                            <div class="w-10 h-10 rounded-xl bg-brand-500/20 text-brand-300 flex items-center justify-center mb-3">
+                                <i data-lucide="award" class="w-6 h-6"></i>
+                            </div>
+                            <h3 class="font-bold text-white text-sm sm:text-base">Chứng Nhận VietGAP</h3>
+                            <p class="text-xs text-brand-100/80 mt-1">Kiểm định an toàn vệ sinh thực phẩm định kỳ mỗi tuần.</p>
+                        </div>
+                        <div class="bg-white/10 backdrop-blur-md border border-white/15 p-4 rounded-2xl">
+                            <div class="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-300 flex items-center justify-center mb-3">
+                                <i data-lucide="truck" class="w-6 h-6"></i>
+                            </div>
+                            <h3 class="font-bold text-white text-sm sm:text-base">Freeship Thuận An</h3>
+                            <p class="text-xs text-brand-100/80 mt-1">Miễn phí giao hàng nội khu Thuận An & đơn từ 200.000đ.</p>
+                        </div>
+                        <div class="bg-white/10 backdrop-blur-md border border-white/15 p-4 rounded-2xl">
+                            <div class="w-10 h-10 rounded-xl bg-sky-500/20 text-sky-300 flex items-center justify-center mb-3">
+                                <i data-lucide="sun" class="w-6 h-6"></i>
+                            </div>
+                            <h3 class="font-bold text-white text-sm sm:text-base">Tươi Mới Trong Ngày</h3>
+                            <p class="text-xs text-brand-100/80 mt-1">Không bán rau tồn qua đêm, bảo quản kho mát tiêu chuẩn.</p>
+                        </div>
+                        <div class="bg-white/10 backdrop-blur-md border border-white/15 p-4 rounded-2xl">
+                            <div class="w-10 h-10 rounded-xl bg-rose-500/20 text-rose-300 flex items-center justify-center mb-3">
+                                <i data-lucide="refresh-ccw" class="w-6 h-6"></i>
+                            </div>
+                            <h3 class="font-bold text-white text-sm sm:text-base">Đổi Trả 1-1 Miễn Phí</h3>
+                            <p class="text-xs text-brand-100/80 mt-1">Hoàn tiền 100% nếu sản phẩm dập nát hoặc không tươi.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Products Catalog Section -->
+        <section id="productsSection" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-12">
+            <!-- Section Header & Category Filter -->
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+                <div>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900">Nông Sản Tươi Sạch Hôm Nay</h2>
+                    <p class="text-sm text-slate-500 mt-1">Số lượng tồn kho được cập nhật trực tiếp từ kho 323 Dương Đức Hiền</p>
+                </div>
+
+                <!-- Category Pills -->
+                <div id="categoryFilters" class="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0 no-scrollbar">
+                    <!-- Rendered by JS -->
+                </div>
+            </div>
+
+            <!-- Product Grid -->
+            <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <!-- Rendered by JS -->
+            </div>
+
+            <!-- Empty Search State -->
+            <div id="emptyStoreState" class="hidden text-center py-16 bg-white rounded-3xl border border-slate-200">
+                <div class="w-16 h-16 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center mx-auto mb-4">
+                    <i data-lucide="search-x" class="w-8 h-8"></i>
+                </div>
+                <h3 class="text-lg font-bold text-slate-800">Không tìm thấy sản phẩm phù hợp</h3>
+                <p class="text-sm text-slate-500 mt-1">Vui lòng thử từ khóa khác hoặc chọn danh mục "Tất cả".</p>
+                <button onclick="resetStoreFilters()" class="mt-4 px-5 py-2.5 rounded-xl bg-brand-600 text-white text-sm font-semibold hover:bg-brand-700 transition">
+                    Xem tất cả sản phẩm
+                </button>
+            </div>
+        </section>
+
+        <!-- Farm Quality & VietGAP Banner -->
+        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-14">
+            <div class="bg-white rounded-3xl border border-brand-100 shadow-sm overflow-hidden">
+                <div class="grid grid-cols-1 lg:grid-cols-2">
+                    <div class="p-6 sm:p-10 flex flex-col justify-center">
+                        <span class="text-xs font-bold uppercase tracking-wider text-brand-600 mb-2">Cam Kết Chất Lượng Thắng Lợi</span>
+                        <h3 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mb-4">Quy Trình "Từ Nông Trại Đến Bàn Ăn" Minh Bạch</h3>
+                        <p class="text-slate-600 text-sm sm:text-base leading-relaxed mb-6">
+                            Mỗi bó rau tại cửa hàng <strong>Rau Sạch Thắng Lợi (323 Dương Đức Hiền, Thuận An, Hà Nội)</strong> đều được liên kết trực tiếp với các HTX Rau Sạch Gia Lâm, Đông Anh và Mộc Châu. Quy trình 4 không: Không phân bón hóa học, Không thuốc trừ sâu độc hại, Không chất kích thích tăng trưởng, Không chất bảo quản.
+                        </p>
+                        <div class="grid grid-cols-3 gap-4 border-t border-slate-100 pt-6">
+                            <div>
+                                <div class="text-2xl font-extrabold text-brand-600">100%</div>
+                                <div class="text-xs text-slate-500 mt-0.5">Đạt chuẩn VietGAP</div>
+                            </div>
+                            <div>
+                                <div class="text-2xl font-extrabold text-brand-600">&lt; 4 Giờ</div>
+                                <div class="text-xs text-slate-500 mt-0.5">Từ vườn lên kệ hàng</div>
+                            </div>
+                            <div>
+                                <div class="text-2xl font-extrabold text-brand-600">5.000+</div>
+                                <div class="text-xs text-slate-500 mt-0.5">Gia đình tin dùng</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="relative min-h-[260px] lg:min-h-full">
+                        <img src="https://images.unsplash.com/photo-1592924357228-91a4daadcfea?auto=format&fit=crop&w=1000&q=80" alt="Nông sản sạch Thắng Lợi" class="w-full h-full object-cover">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="bg-slate-900 text-slate-300 border-t border-slate-800">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <div>
+                        <div class="flex items-center gap-2.5 mb-4">
+                            <div class="w-9 h-9 rounded-xl bg-brand-600 flex items-center justify-center text-white">
+                                <i data-lucide="sprout" class="w-5 h-5"></i>
+                            </div>
+                            <span class="text-lg font-extrabold text-white">Rau Sạch Thắng Lợi</span>
+                        </div>
+                        <p class="text-sm text-slate-400 leading-relaxed mb-4">
+                            Hệ thống cung cấp rau củ quả hữu cơ chuẩn VietGAP tươi ngon mỗi ngày cho cư dân khu vực Thuận An, Gia Lâm và toàn thành phố Hà Nội.
+                        </p>
+                        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-800 text-brand-400 text-xs font-semibold">
+                            <i data-lucide="shield-check" class="w-4 h-4"></i> Mã số VietGAP: VG-HN-32388
+                        </div>
+                    </div>
+
+                    <div>
+                        <h4 class="text-white font-bold mb-4">Thông Tin Cửa Hàng</h4>
+                        <ul class="space-y-3 text-sm text-slate-400">
+                            <li class="flex items-start gap-2.5">
+                                <i data-lucide="map-pin" class="w-4 h-4 text-brand-500 shrink-0 mt-1"></i>
+                                <span><strong class="text-slate-200">Địa chỉ:</strong> 323 Dương Đức Hiền, Thuận An, Hà Nội</span>
+                            </li>
+                            <li class="flex items-center gap-2.5">
+                                <i data-lucide="phone" class="w-4 h-4 text-brand-500 shrink-0"></i>
+                                <span><strong class="text-slate-200">Hotline / Zalo:</strong> 0988.323.888</span>
+                            </li>
+                            <li class="flex items-center gap-2.5">
+                                <i data-lucide="mail" class="w-4 h-4 text-brand-500 shrink-0"></i>
+                                <span>cskh@rausachthangloi.vn</span>
+                            </li>
+                            <li class="flex items-center gap-2.5">
+                                <i data-lucide="clock" class="w-4 h-4 text-brand-500 shrink-0"></i>
+                                <span>06:00 - 21:00 (Thứ 2 - Chủ Nhật)</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h4 class="text-white font-bold mb-4">Chính Sách Giao Hàng</h4>
+                        <ul class="space-y-2.5 text-sm text-slate-400">
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-brand-500"></i> Miễn phí ship khu vực Thuận An, Hà Nội</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-brand-500"></i> Miễn phí ship đơn hàng từ 200.000đ</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-brand-500"></i> Giao nhanh hỏa tốc trong 2 giờ</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-brand-500"></i> Kiểm tra hàng tươi trước khi thanh toán</li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h4 class="text-white font-bold mb-4">Tiện Ích Nhanh</h4>
+                        <div class="space-y-2.5">
+                            <button onclick="openModal('lookupModal')" class="w-full py-2.5 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-left text-sm font-medium text-white transition flex items-center justify-between">
+                                <span>Tra cứu đơn hàng</span>
+                                <i data-lucide="chevron-right" class="w-4 h-4 text-slate-400"></i>
+                            </button>
+                            <button onclick="switchView('admin')" class="w-full py-2.5 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-left text-sm font-medium text-white transition flex items-center justify-between">
+                                <span>Hệ thống Quản lý Kho</span>
+                                <i data-lucide="chevron-right" class="w-4 h-4 text-slate-400"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="border-t border-slate-800 mt-10 pt-6 flex flex-col sm:flex-row justify-between items-center text-xs text-slate-500 gap-2">
+                    <p>© 2026 Cửa Hàng Rau Sạch Thắng Lợi - 323 Dương Đức Hiền, Thuận An, Hà Nội.</p>
+                    <p>Hệ thống Thương mại điện tử & Quản lý Xuất Nhập Kho tích hợp.</p>
+                </div>
+            </div>
+        </footer>
+    </main>
+
+    <!-- ===================================================================== -->
+    <!-- VIEW 2: WAREHOUSE & INVENTORY MANAGEMENT (QUẢN LÝ KHO ADMIN)          -->
+    <!-- ===================================================================== -->
+    <main id="adminView" class="hidden fade-in max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Admin Top Header -->
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-8 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+            <div>
+                <div class="flex items-center gap-2">
+                    <span class="px-2.5 py-0.5 rounded-md bg-brand-100 text-brand-800 text-xs font-bold">KHO TỔNG THUẬN AN</span>
+                    <span class="text-xs text-slate-400">323 Dương Đức Hiền, Thuận An, Hà Nội</span>
+                </div>
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-1">Quản Lý Kho & Xuất Nhập Hàng</h2>
+                <p class="text-sm text-slate-500 mt-0.5">Đồng bộ thời gian thực với đơn đặt hàng của khách trên website</p>
+            </div>
+            <div class="flex flex-wrap items-center gap-2.5">
+                <button onclick="openStockModal('import')" class="px-4 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-semibold text-sm shadow-sm flex items-center gap-2 transition">
+                    <i data-lucide="arrow-down-to-line" class="w-4 h-4"></i>
+                    <span>+ Nhập Kho</span>
+                </button>
+                <button onclick="openStockModal('export')" class="px-4 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-semibold text-sm shadow-sm flex items-center gap-2 transition">
+                    <i data-lucide="arrow-up-from-line" class="w-4 h-4"></i>
+                    <span>- Xuất Kho</span>
+                </button>
+                <button onclick="openAddProductModal()" class="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-900 text-white font-semibold text-sm shadow-sm flex items-center gap-2 transition">
+                    <i data-lucide="plus-circle" class="w-4 h-4"></i>
+                    <span>Thêm Mặt Hàng</span>
+                </button>
+                <button onclick="confirmResetDemoData()" title="Khôi phục dữ liệu mẫu ban đầu" class="px-3.5 py-2.5 rounded-xl bg-slate-100 hover:bg-rose-50 text-slate-600 hover:text-rose-600 border border-slate-200 font-medium text-sm flex items-center gap-1.5 transition">
+                    <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+                    <span class="hidden sm:inline">Khôi phục mẫu</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- KPI Stats Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8">
+            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+                <div class="flex items-center justify-between">
+                    <span class="text-sm font-medium text-slate-500">Tổng Mặt Hàng</span>
+                    <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
+                        <i data-lucide="layers" class="w-5 h-5"></i>
+                    </div>
+                </div>
+                <div id="kpiTotalItems" class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-3">0</div>
+                <p id="kpiTotalWeight" class="text-xs text-slate-500 mt-1">Tổng lượng tồn: 0 kg/bó</p>
+            </div>
+
+            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+                <div class="flex items-center justify-between">
+                    <span class="text-sm font-medium text-slate-500">Giá Trị Tồn Kho (Vốn)</span>
+                    <div class="w-10 h-10 rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center">
+                        <i data-lucide="wallet" class="w-5 h-5"></i>
+                    </div>
+                </div>
+                <div id="kpiInventoryValue" class="text-2xl sm:text-3xl font-extrabold text-brand-700 mt-3">0đ</div>
+                <p class="text-xs text-slate-500 mt-1">Tính theo đơn giá nhập kho</p>
+            </div>
+
+            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+                <div class="flex items-center justify-between">
+                    <span class="text-sm font-medium text-slate-500">Cảnh Báo Sắp Hết (&lt;10)</span>
+                    <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
+                        <i data-lucide="alert-triangle" class="w-5 h-5"></i>
+                    </div>
+                </div>
+                <div id="kpiLowStock" class="text-2xl sm:text-3xl font-extrabold text-amber-600 mt-3">0</div>
+                <p class="text-xs text-slate-500 mt-1">Mặt hàng cần nhập thêm từ vườn</p>
+            </div>
+
+            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+                <div class="flex items-center justify-between">
+                    <span class="text-sm font-medium text-slate-500">Doanh Thu Đơn Hàng</span>
+                    <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+                        <i data-lucide="trending-up" class="w-5 h-5"></i>
+                    </div>
+                </div>
+                <div id="kpiRevenue" class="text-2xl sm:text-3xl font-extrabold text-emerald-600 mt-3">0đ</div>
+                <p id="kpiOrderCount" class="text-xs text-slate-500 mt-1">0 đơn hàng online</p>
+            </div>
+        </div>
+
+        <!-- Admin Tabs -->
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+            <div class="border-b border-slate-200 px-4 sm:px-6 flex items-center gap-6 overflow-x-auto">
+                <button id="tabInventoryBtn" onclick="switchAdminTab('inventory')" class="py-4 text-sm font-bold border-b-2 border-brand-600 text-brand-700 whitespace-nowrap flex items-center gap-2">
+                    <i data-lucide="boxes" class="w-4 h-4"></i>
+                    <span>Tồn Kho Hiện Tại</span>
+                </button>
+                <button id="tabLogsBtn" onclick="switchAdminTab('logs')" class="py-4 text-sm font-semibold border-b-2 border-transparent text-slate-500 hover:text-slate-800 whitespace-nowrap flex items-center gap-2">
+                    <i data-lucide="history" class="w-4 h-4"></i>
+                    <span>Nhật Ký Xuất / Nhập Kho</span>
+                </button>
+                <button id="tabOrdersBtn" onclick="switchAdminTab('orders')" class="py-4 text-sm font-semibold border-b-2 border-transparent text-slate-500 hover:text-slate-800 whitespace-nowrap flex items-center gap-2">
+                    <i data-lucide="truck" class="w-4 h-4"></i>
+                    <span>Đơn Giao Hàng Online</span>
+                    <span id="pendingOrdersBadge" class="bg-brand-100 text-brand-700 text-xs font-bold px-2 py-0.5 rounded-full">0</span>
+                </button>
+            </div>
+
+            <!-- TAB 1: INVENTORY TABLE -->
+            <div id="adminTabInventory" class="p-4 sm:p-6">
+                <div class="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3 mb-5">
+                    <div class="relative max-w-sm w-full">
+                        <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+                        <input type="text" oninput="renderAdminInventory(this.value)" placeholder="Lọc theo mã SKU hoặc tên rau củ..." class="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-brand-500">
+                    </div>
+                    <div class="text-xs text-slate-500">
+                        * Nhấn <strong class="text-brand-600">+ Nhập</strong> để bổ sung hàng từ nhà vườn
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-50 text-slate-600 text-xs uppercase tracking-wider border-y border-slate-200">
+                                <th class="py-3.5 px-4 font-bold">Mã SKU</th>
+                                <th class="py-3.5 px-4 font-bold">Mặt Hàng</th>
+                                <th class="py-3.5 px-4 font-bold">Danh Mục</th>
+                                <th class="py-3.5 px-4 font-bold text-right">Giá Nhập</th>
+                                <th class="py-3.5 px-4 font-bold text-right">Giá Bán</th>
+                                <th class="py-3.5 px-4 font-bold text-center">Tồn Kho</th>
+                                <th class="py-3.5 px-4 font-bold text-center">Trạng Thái</th>
+                                <th class="py-3.5 px-4 font-bold text-right">Thao Tác</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminInventoryBody" class="divide-y divide-slate-100 text-sm">
+                            <!-- Rendered by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- TAB 2: STOCK LOGS (LỊCH SỬ XUẤT NHẬP) -->
+            <div id="adminTabLogs" class="hidden p-4 sm:p-6">
+                <div class="flex flex-wrap items-center justify-between gap-3 mb-5">
+                    <div class="flex items-center gap-2">
+                        <button onclick="filterStockLogs('ALL')" id="logFilterALL" class="px-3.5 py-1.5 rounded-lg text-xs font-bold bg-slate-800 text-white">Tất cả phiếu</button>
+                        <button onclick="filterStockLogs('IMPORT')" id="logFilterIMPORT" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-brand-50 hover:text-brand-700">Phiếu Nhập Kho</button>
+                        <button onclick="filterStockLogs('EXPORT')" id="logFilterEXPORT" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-amber-50 hover:text-amber-700">Phiếu Xuất Kho</button>
+                    </div>
+                    <span class="text-xs text-slate-500">Tự động lưu vết mọi giao dịch xuất bán & nhập vườn</span>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-50 text-slate-600 text-xs uppercase tracking-wider border-y border-slate-200">
+                                <th class="py-3.5 px-4 font-bold">Mã Phiếu / Thời Gian</th>
+                                <th class="py-3.5 px-4 font-bold">Loại Giao Dịch</th>
+                                <th class="py-3.5 px-4 font-bold">Sản Phẩm</th>
+                                <th class="py-3.5 px-4 font-bold text-center">Số Lượng</th>
+                                <th class="py-3.5 px-4 font-bold text-right">Tổng Giá Trị</th>
+                                <th class="py-3.5 px-4 font-bold">Đối Tác / Ghi Chú</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminLogsBody" class="divide-y divide-slate-100 text-sm">
+                            <!-- Rendered by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- TAB 3: ONLINE ORDERS MANAGEMENT -->
+            <div id="adminTabOrders" class="hidden p-4 sm:p-6">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-50 text-slate-600 text-xs uppercase tracking-wider border-y border-slate-200">
+                                <th class="py-3.5 px-4 font-bold">Mã Đơn</th>
+                                <th class="py-3.5 px-4 font-bold">Khách Hàng & Giao Nhận</th>
+                                <th class="py-3.5 px-4 font-bold">Chi Tiết Mặt Hàng</th>
+                                <th class="py-3.5 px-4 font-bold text-right">Tổng Thanh Toán</th>
+                                <th class="py-3.5 px-4 font-bold text-center">Trạng Thái Giao</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminOrdersBody" class="divide-y divide-slate-100 text-sm">
+                            <!-- Rendered by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- ===================================================================== -->
+    <!-- SLIDE-OVER CART & CHECKOUT DRAWER                                     -->
+    <!-- ===================================================================== -->
+    <div id="cartDrawerBackdrop" onclick="toggleCartDrawer(false)" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 hidden transition-opacity"></div>
+    <aside id="cartDrawer" class="fixed top-0 right-0 h-full w-full max-w-lg bg-white z-50 shadow-2xl transform translate-x-full transition-transform duration-300 flex flex-col">
+        <!-- Drawer Header -->
+        <div class="px-5 py-4 border-b border-slate-200 flex items-center justify-between bg-brand-50/60">
+            <div class="flex items-center gap-2.5">
+                <div class="w-9 h-9 rounded-xl bg-brand-600 text-white flex items-center justify-center">
+                    <i data-lucide="shopping-bag" class="w-5 h-5"></i>
+                </div>
+                <div>
+                    <h3 class="font-extrabold text-slate-900 text-base">Giỏ Hàng & Giao Hàng</h3>
+                    <p class="text-xs text-slate-500">Kho xuất: 323 Dương Đức Hiền, Thuận An</p>
+                </div>
+            </div>
+            <button onclick="toggleCartDrawer(false)" class="p-2 rounded-xl hover:bg-slate-200/70 text-slate-500 transition">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+        </div>
+
+        <!-- Drawer Scrollable Body -->
+        <div class="flex-1 overflow-y-auto p-5 space-y-6">
+            <!-- Cart Items List -->
+            <div id="cartItemsContainer" class="space-y-3">
+                <!-- Rendered by JS -->
+            </div>
+
+            <!-- Delivery & Checkout Form (Shown when cart not empty) -->
+            <form id="checkoutForm" onsubmit="submitOrder(event)" class="hidden space-y-4 pt-4 border-t border-slate-200">
+                <h4 class="font-bold text-slate-900 text-sm flex items-center gap-2">
+                    <i data-lucide="map-pin" class="w-4 h-4 text-brand-600"></i>
+                    <span>Thông Tin Nhận Hàng</span>
+                </h4>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Họ và tên *</label>
+                        <input type="text" id="custName" required placeholder="VD: Nguyễn Thị Lan" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:border-brand-500 focus:bg-white outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Số điện thoại *</label>
+                        <input type="tel" id="custPhone" required placeholder="VD: 0912345678" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:border-brand-500 focus:bg-white outline-none">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Khu vực giao hàng (Tính phí tự động) *</label>
+                    <select id="deliveryZone" onchange="updateCartSummary()" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:border-brand-500 focus:bg-white outline-none">
+                        <option value="thuan_an">Khu vực Thuận An / Dương Đức Hiền (Miễn phí ship)</option>
+                        <option value="gia_lam">Khu vực Gia Lâm / Trâu Quỳ / Ocean Park (15.000đ - Freeship từ 200k)</option>
+                        <option value="noi_thanh">Nội thành Hà Nội khác (25.000đ - Freeship từ 200k)</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Địa chỉ chi tiết *</label>
+                    <input type="text" id="custAddress" required placeholder="Số nhà, ngõ/đường, thôn/phường..." value="Số 15 Ngõ 323 Dương Đức Hiền, Thuận An, Hà Nội" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:border-brand-500 focus:bg-white outline-none">
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Khung giờ giao hàng</label>
+                        <select id="deliverySlot" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:border-brand-500 focus:bg-white outline-none">
+                            <option value="Giao nhanh trong 2 giờ">⚡ Giao nhanh trong 2 giờ</option>
+                            <option value="Sáng mai (07:00 - 09:00)">🌅 Sáng mai (07:00 - 09:00)</option>
+                            <option value="Chiều mai (16:00 - 18:00)">🌇 Chiều mai (16:00 - 18:00)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Thanh toán</label>
+                        <select id="paymentMethod" onchange="togglePaymentQR()" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:border-brand-500 focus:bg-white outline-none">
+                            <option value="COD">💵 Tiền mặt khi nhận (COD)</option>
+                            <option value="QR">🏦 Chuyển khoản VietQR</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- QR Payment Box -->
+                <div id="qrPaymentBox" class="hidden p-4 rounded-2xl bg-brand-50 border border-brand-200 flex items-center gap-4">
+                    <div class="w-20 h-20 bg-white p-1.5 rounded-xl border border-brand-200 shrink-0 flex items-center justify-center">
+                        <!-- Stylized SVG QR Code -->
+                        <svg viewBox="0 0 100 100" class="w-full h-full text-slate-900">
+                            <rect x="5" y="5" width="25" height="25" fill="none" stroke="currentColor" stroke-width="5"/>
+                            <rect x="12" y="12" width="11" height="11" fill="currentColor"/>
+                            <rect x="70" y="5" width="25" height="25" fill="none" stroke="currentColor" stroke-width="5"/>
+                            <rect x="77" y="12" width="11" height="11" fill="currentColor"/>
+                            <rect x="5" y="70" width="25" height="25" fill="none" stroke="currentColor" stroke-width="5"/>
+                            <rect x="12" y="77" width="11" height="11" fill="currentColor"/>
+                            <path d="M40 10h10v10H40zm15 15h10v10H55zM40 40h20v20H40zm25 5h15v10H65zM10 45h20v10H10zm35 25h10v25H45zm20 10h25v15H65z" fill="currentColor"/>
+                        </svg>
+                    </div>
+                    <div class="text-xs space-y-1">
+                        <div class="font-bold text-brand-900">MB Bank - RAU SẠCH THẮNG LỢI</div>
+                        <div class="font-mono font-bold text-sm text-brand-700">STK: 8888323888</div>
+                        <div class="text-slate-600">Nội dung: <span class="font-semibold">SDT + Mua rau sach</span></div>
+                    </div>
+                </div>
+
+                <!-- Price Summary -->
+                <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-2 text-sm">
+                    <div class="flex justify-between text-slate-600">
+                        <span>Tạm tính tiền hàng:</span>
+                        <span id="summarySubtotal" class="font-semibold text-slate-900">0đ</span>
+                    </div>
+                    <div class="flex justify-between text-slate-600">
+                        <span>Phí giao hàng:</span>
+                        <span id="summaryShipping" class="font-semibold text-brand-600">Miễn phí</span>
+                    </div>
+                    <div id="freeShipHint" class="text-[11px] text-amber-600 hidden">
+                        Mua thêm <span id="freeShipRemain" class="font-bold">0đ</span> để được Miễn phí vận chuyển!
+                    </div>
+                    <div class="border-t border-slate-200 pt-2 flex justify-between items-center text-base font-extrabold text-slate-900">
+                        <span>Tổng thanh toán:</span>
+                        <span id="summaryTotal" class="text-lg text-brand-700">0đ</span>
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full py-3.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-base shadow-lg shadow-brand-600/25 transition flex items-center justify-center gap-2">
+                    <i data-lucide="check-circle-2" class="w-5 h-5"></i>
+                    <span>Xác Nhận Đặt Hàng</span>
+                </button>
+            </form>
+        </div>
+    </aside>
+
+    <!-- ===================================================================== -->
+    <!-- MODALS                                                                -->
+    <!-- ===================================================================== -->
+
+    <!-- 1. PRODUCT DETAIL & ORIGIN MODAL -->
+    <div id="productDetailModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
+        <div class="bg-white rounded-3xl max-w-2xl w-full overflow-hidden shadow-2xl fade-in">
+            <div id="productDetailContent"></div>
+        </div>
+    </div>
+
+    <!-- 2. ORDER INVOICE SUCCESS MODAL -->
+    <div id="invoiceModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
+        <div class="bg-white rounded-3xl max-w-lg w-full overflow-hidden shadow-2xl fade-in">
+            <div id="invoiceContent"></div>
+        </div>
+    </div>
+
+    <!-- 3. ORDER LOOKUP MODAL (TRA CỨU ĐƠN HÀNG) -->
+    <div id="lookupModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
+        <div class="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl fade-in">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-extrabold text-slate-900 flex items-center gap-2">
+                    <i data-lucide="package-search" class="w-5 h-5 text-brand-600"></i>
+                    <span>Tra Cứu Đơn Hàng</span>
+                </h3>
+                <button onclick="closeModal('lookupModal')" class="p-1.5 rounded-lg hover:bg-slate-100 text-slate-500">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            <p class="text-xs text-slate-500 mb-4">Nhập mã đơn hàng (VD: DH-1001) hoặc số điện thoại đặt hàng để kiểm tra trạng thái giao hàng.</p>
+            <div class="flex gap-2 mb-4">
+                <input type="text" id="lookupQueryInput" placeholder="Nhập mã đơn hoặc SĐT..." class="flex-1 px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-brand-500">
+                <button onclick="performOrderLookup()" class="px-5 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-semibold text-sm transition">
+                    Tìm kiếm
+                </button>
+            </div>
+            <div id="lookupResults" class="max-h-80 overflow-y-auto space-y-3">
+                <!-- Populated dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. VIETGAP TRACEABILITY MODAL -->
+    <div id="traceabilityModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
+        <div class="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl fade-in">
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center gap-2 text-brand-700 font-extrabold text-lg">
+                    <i data-lucide="shield-check" class="w-6 h-6"></i>
+                    <span>Chứng Nhận Chuẩn VietGAP</span>
+                </div>
+                <button onclick="closeModal('traceabilityModal')" class="p-1.5 rounded-lg hover:bg-slate-100 text-slate-500">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            <div class="space-y-4 text-sm text-slate-600">
+                <div class="p-4 rounded-2xl bg-brand-50 border border-brand-200">
+                    <div class="font-bold text-brand-900">Đơn vị phân phối: Cửa Hàng Rau Sạch Thắng Lợi</div>
+                    <div class="text-xs text-brand-800 mt-1">Địa chỉ: 323 Dương Đức Hiền, Thuận An, Hà Nội</div>
+                    <div class="text-xs text-brand-800">Mã chứng nhận chuỗi cung ứng: <span class="font-mono font-bold">VG-HN-2026-323</span></div>
+                </div>
+                <div class="space-y-2.5">
+                    <div class="flex items-start gap-2.5">
+                        <i data-lucide="check-circle" class="w-4 h-4 text-brand-600 shrink-0 mt-0.5"></i>
+                        <span><strong>Vùng trồng liên kết:</strong> HTX Rau An Toàn Đặng Xá (Gia Lâm), Vùng rau hữu cơ Đông Anh & Cao nguyên Mộc Châu.</span>
+                    </div>
+                    <div class="flex items-start gap-2.5">
+                        <i data-lucide="check-circle" class="w-4 h-4 text-brand-600 shrink-0 mt-0.5"></i>
+                        <span><strong>Kiểm nghiệm nhanh mỗi sáng:</strong> 100% lô hàng nhập kho lúc 05:00 sáng đều được test nhanh dư lượng Nitrat và thuốc BVTV trước khi lên kệ.</span>
+                    </div>
+                    <div class="flex items-start gap-2.5">
+                        <i data-lucide="check-circle" class="w-4 h-4 text-brand-600 shrink-0 mt-0.5"></i>
+                        <span><strong>Bảo quản lạnh chuẩn:</strong> Kho mát duy trì nhiệt độ 8°C - 12°C giúp rau giữ trọn vitamin và độ giòn ngọt tự nhiên.</span>
+                    </div>
+                </div>
+            </div>
+            <button onclick="closeModal('traceabilityModal')" class="mt-6 w-full py-2.5 rounded-xl bg-slate-900 text-white font-semibold text-sm hover:bg-slate-800 transition">
+                Đã Hiểu
+            </button>
+        </div>
+    </div>
+
+    <!-- 5. IMPORT / EXPORT STOCK MODAL (PHIẾU NHẬP / XUẤT KHO) -->
+    <div id="stockActionModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl fade-in">
+            <div class="flex items-center justify-between mb-4">
+                <h3 id="stockModalTitle" class="text-lg font-extrabold text-slate-900">Phiếu Nhập Kho</h3>
+                <button onclick="closeModal('stockActionModal')" class="p-1.5 rounded-lg hover:bg-slate-100 text-slate-500">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            <form id="stockActionForm" onsubmit="submitStockAction(event)" class="space-y-4">
+                <input type="hidden" id="stockActionType" value="import">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Chọn mặt hàng *</label>
+                    <select id="stockProductSelect" onchange="onStockProductChange()" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-brand-500">
+                        <!-- Rendered by JS -->
+                    </select>
+                    <p id="stockCurrentHint" class="text-xs text-slate-500 mt-1">Tồn kho hiện tại: 0</p>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Số lượng *</label>
+                        <input type="number" id="stockQtyInput" min="1" step="1" required placeholder="VD: 20" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-brand-500">
+                    </div>
+                    <div>
+                        <label id="stockPriceLabel" class="block text-xs font-semibold text-slate-700 mb-1">Đơn giá nhập (VNĐ) *</label>
+                        <input type="number" id="stockPriceInput" min="0" step="500" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-brand-500">
+                    </div>
+                </div>
+
+                <div>
+                    <label id="stockPartnerLabel" class="block text-xs font-semibold text-slate-700 mb-1">Nhà cung cấp / Nông trại *</label>
+                    <input type="text" id="stockPartnerInput" required placeholder="VD: HTX Rau Sạch Gia Lâm" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-brand-500">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Ghi chú phiếu</label>
+                    <input type="text" id="stockNoteInput" placeholder="VD: Nhập lô thu hoạch sáng nay, đạt chuẩn VietGAP" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-brand-500">
+                </div>
+
+                <button id="stockSubmitBtn" type="submit" class="w-full py-3 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm shadow-md transition">
+                    Xác Nhận Nhập Kho
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 6. ADD NEW PRODUCT MODAL (THÊM MẶT HÀNG MỚI VÀO KHO) -->
+    <div id="addProductModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
+        <div class="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl fade-in max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-extrabold text-slate-900">Thêm Mặt Hàng Rau Củ Mới</h3>
+                <button onclick="closeModal('addProductModal')" class="p-1.5 rounded-lg hover:bg-slate-100 text-slate-500">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            <form onsubmit="submitNewProduct(event)" class="space-y-3.5">
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Tên sản phẩm *</label>
+                        <input type="text" id="newProdName" required placeholder="VD: Cải ngọt hữu cơ" class="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-brand-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Danh mục *</label>
+                        <select id="newProdCategory" class="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-brand-500">
+                            <option value="Rau ăn lá">Rau ăn lá</option>
+                            <option value="Củ quả">Củ quả</option>
+                            <option value="Gia vị & Rau thơm">Gia vị & Rau thơm</option>
+                            <option value="Trái cây sạch">Trái cây sạch</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-3 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Đơn vị tính *</label>
+                        <select id="newProdUnit" class="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-brand-500">
+                            <option value="kg">kg</option>
+                            <option value="bó (500g)">bó (500g)</option>
+                            <option value="túi (300g)">túi (300g)</option>
+                            <option value="quả">quả</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Giá nhập (đ) *</label>
+                        <input type="number" id="newProdCost" required min="1000" step="500" placeholder="15000" class="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-brand-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Giá bán (đ) *</label>
+                        <input type="number" id="newProdPrice" required min="1000" step="500" placeholder="25000" class="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-brand-500">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Tồn kho ban đầu *</label>
+                        <input type="number" id="newProdStock" required min="0" value="25" class="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-brand-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Nguồn gốc nông trại *</label>
+                        <input type="text" id="newProdOrigin" required value="HTX Rau Sạch Gia Lâm, Hà Nội" class="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-brand-500">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">URL Hình ảnh thật (Unsplash/Pexels)</label>
+                    <input type="url" id="newProdImg" placeholder="https://images.unsplash.com/..." value="https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=800&q=80" class="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-brand-500">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Mô tả ngắn</label>
+                    <textarea id="newProdDesc" rows="2" placeholder="Đặc điểm độ tươi ngon, cách chế biến..." class="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-brand-500">Rau sạch trồng theo quy trình VietGAP, thu hoạch sáng sớm mỗi ngày.</textarea>
+                </div>
+
+                <button type="submit" class="w-full py-3 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm shadow-md transition">
+                    Lưu Mặt Hàng & Nhập Kho
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 7. CONFIRM RESET MODAL (NO window.confirm) -->
+    <div id="resetConfirmModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
+        <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl fade-in text-center">
+            <div class="w-12 h-12 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center mx-auto mb-3">
+                <i data-lucide="rotate-ccw" class="w-6 h-6"></i>
+            </div>
+            <h3 class="text-lg font-extrabold text-slate-900">Khôi Phục Dữ Liệu Mẫu?</h3>
+            <p class="text-xs text-slate-500 mt-1.5 leading-relaxed">
+                Toàn bộ tồn kho, đơn hàng và lịch sử xuất nhập kho sẽ được đặt lại về trạng thái mặc định ban đầu của cửa hàng Rau Sạch Thắng Lợi.
+            </p>
+            <div class="grid grid-cols-2 gap-2.5 mt-5">
+                <button onclick="closeModal('resetConfirmModal')" class="py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-sm transition">
+                    Hủy Bỏ
+                </button>
+                <button onclick="executeResetDemoData()" class="py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-semibold text-sm transition">
+                    Đồng Ý Khôi Phục
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================================================================== -->
+    <!-- APPLICATION JAVASCRIPT                                                -->
+    <!-- ===================================================================== -->
+    <script>
+        // -------------------------------------------------------------------
+        // 1. INITIAL DEMO DATA (SẢN PHẨM RAU CỦ QUẢ THẬT CHUẨN VIETGAP)
+        // -------------------------------------------------------------------
+        const INITIAL_PRODUCTS = [
+            {
+                id: 'SP01',
+                sku: 'VG-RAU-001',
+                name: 'Cải Bó Xôi (Rau Chân Vịt) Hữu Cơ',
+                category: 'Rau ăn lá',
+                unit: 'túi (500g)',
+                costPrice: 16000,
+                sellPrice: 24000,
+                stock: 35,
+                origin: 'HTX Rau An Toàn Đặng Xá, Gia Lâm, Hà Nội',
+                cert: 'VietGAP #VG-201',
+                image: 'https://images.unsplash.com/photo-1576045057995-568f588f82fb?auto=format&fit=crop&w=800&q=80',
+                description: 'Cải bó xôi lá xanh đậm, non mềm, giàu sắt và vitamin A, C. Trồng nhà màng chuẩn VietGAP, không thuốc trừ sâu.'
+            },
+            {
+                id: 'SP02',
+                sku: 'VG-CUQ-002',
+                name: 'Cà Chua Bi Đỏ Mộc Châu',
+                category: 'Củ quả',
+                unit: 'hộp (500g)',
+                costPrice: 18000,
+                sellPrice: 28000,
+                stock: 42,
+                origin: 'Nông Trại Hữu Cơ Mộc Châu, Sơn La',
+                cert: 'VietGAP #VG-205',
+                image: 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?auto=format&fit=crop&w=800&q=80',
+                description: 'Cà chua bi chín cây tự nhiên, vỏ mỏng, vị ngọt thanh pha chua dịu, thích hợp ăn sống làm salad hoặc nấu sốt.'
+            },
+            {
+                id: 'SP03',
+                sku: 'VG-CUQ-003',
+                name: 'Súp Lơ Xanh (Bông Cải Xanh)',
+                category: 'Củ quả',
+                unit: 'kg',
+                costPrice: 25000,
+                sellPrice: 38000,
+                stock: 8, // Low stock alert demo (< 10)
+                origin: 'Vùng Rau Sạch Đông Anh, Hà Nội',
+                cert: 'VietGAP #VG-209',
+                image: 'https://images.unsplash.com/photo-1459411621453-7b03977f4bfc?auto=format&fit=crop&w=800&q=80',
+                description: 'Bông cải xanh chắc nịch, tươi giòn, giàu chất chống oxy hóa. Thu hoạch sáng sớm và bảo quản kho mát.'
+            },
+            {
+                id: 'SP04',
+                sku: 'VG-CUQ-004',
+                name: 'Cà Rốt Đà Lạt Hữu Cơ',
+                category: 'Củ quả',
+                unit: 'kg',
+                costPrice: 15000,
+                sellPrice: 25000,
+                stock: 50,
+                origin: 'Nông Trại Đơn Dương, Lâm Đồng',
+                cert: 'VietGAP #VG-212',
+                image: 'https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?auto=format&fit=crop&w=800&q=80',
+                description: 'Cà rốt củ thon đều, màu cam tươi, lõi nhỏ, vị ngọt đậm tự nhiên, không chất bảo quản bề mặt.'
+            },
+            {
+                id: 'SP05',
+                sku: 'VG-RAU-005',
+                name: 'Rau Muống Sạch Thủy Canh',
+                category: 'Rau ăn lá',
+                unit: 'bó (500g)',
+                costPrice: 10000,
+                sellPrice: 16000,
+                stock: 28,
+                origin: 'Trang Trại Thủy Canh Thuận An, Hà Nội',
+                cert: 'VietGAP #VG-215',
+                image: 'https://images.unsplash.com/photo-1622206151226-18ca2c9ab4a1?auto=format&fit=crop&w=800&q=80',
+                description: 'Rau muống trồng giàn thủy canh sạch 100%, cọng giòn xanh mướt, luộc hay xào tỏi đều giữ màu xanh đẹp mắt.'
+            },
+            {
+                id: 'SP06',
+                sku: 'VG-CUQ-006',
+                name: 'Dưa Chuột Baby Giòn Ngọt',
+                category: 'Củ quả',
+                unit: 'kg',
+                costPrice: 17000,
+                sellPrice: 26000,
+                stock: 30,
+                origin: 'HTX Nông Nghiệp Văn Giang, Hưng Yên',
+                cert: 'VietGAP #VG-218',
+                image: 'https://images.unsplash.com/photo-1604977042946-1eecc30f269e?auto=format&fit=crop&w=800&q=80',
+                description: 'Dưa chuột baby đặc ruột, ít hạt, vỏ mỏng ăn cả vỏ cực kỳ giòn ngọt và thanh mát.'
+            },
+            {
+                id: 'SP07',
+                sku: 'VG-CUQ-007',
+                name: 'Khoai Tây Vàng Mộc Châu',
+                category: 'Củ quả',
+                unit: 'kg',
+                costPrice: 16000,
+                sellPrice: 26000,
+                stock: 45,
+                origin: 'Nông Trường Mộc Châu, Sơn La',
+                cert: 'VietGAP #VG-221',
+                image: 'https://images.unsplash.com/photo-1518977676601-b53f82aba655?auto=format&fit=crop&w=800&q=80',
+                description: 'Khoai tây ruột vàng bở bùi, thơm ngon, củ lành lặn không nảy mầm, tuyệt vời để nấu canh xương hoặc chiên giòn.'
+            },
+            {
+                id: 'SP08',
+                sku: 'VG-GIA-008',
+                name: 'Combo Hành Lá & Rau Mùi Ta',
+                category: 'Gia vị & Rau thơm',
+                unit: 'túi (300g)',
+                costPrice: 8000,
+                sellPrice: 15000,
+                stock: 22,
+                origin: 'HTX Rau Gia Vị Đặng Xá, Gia Lâm',
+                cert: 'VietGAP #VG-225',
+                image: 'https://images.unsplash.com/photo-1588879460618-9249e7d947d1?auto=format&fit=crop&w=800&q=80',
+                description: 'Hành hoa tươi và rau mùi ta thơm nức đặc trưng, đã nhặt sạch rễ, đóng túi bảo quản tiện lợi cho mỗi bữa nấu.'
+            },
+            {
+                id: 'SP09',
+                sku: 'VG-RAU-009',
+                name: 'Bắp Cải Tím Hữu Cơ',
+                category: 'Rau ăn lá',
+                unit: 'kg',
+                costPrice: 20000,
+                sellPrice: 32000,
+                stock: 7, // Low stock alert demo (< 10)
+                origin: 'Nông Trại Lạc Dương, Đà Lạt',
+                cert: 'VietGAP #VG-230',
+                image: 'https://images.unsplash.com/photo-1594282486552-05b4d80fbb9f?auto=format&fit=crop&w=800&q=80',
+                description: 'Bắp cải tím cuốn chặt, lá giòn ngọt, màu sắc bắt mắt, chuyên dùng trộn salad hoặc xào thanh đạm.'
+            },
+            {
+                id: 'SP10',
+                sku: 'VG-CUQ-010',
+                name: 'Bí Đỏ Hồ Lô Sạch',
+                category: 'Củ quả',
+                unit: 'kg',
+                costPrice: 14000,
+                sellPrice: 22000,
+                stock: 38,
+                origin: 'HTX Nông Sản Yên Mỹ, Hưng Yên',
+                cert: 'VietGAP #VG-234',
+                image: 'https://images.unsplash.com/photo-1570586437263-ab629fccc818?auto=format&fit=crop&w=800&q=80',
+                description: 'Bí đỏ hồ lô đặc ruột, dẻo bùi và ngọt tự nhiên, rất tốt cho trí não và hệ tiêu hóa của trẻ nhỏ.'
+            },
+            {
+                id: 'SP11',
+                sku: 'VG-GIA-011',
+                name: 'Ớt Chuông Đỏ & Vàng Đà Lạt',
+                category: 'Gia vị & Rau thơm',
+                unit: 'kg',
+                costPrice: 38000,
+                sellPrice: 55000,
+                stock: 16,
+                origin: 'Nhà Kính Công Nghệ Cao Đà Lạt',
+                cert: 'VietGAP #VG-238',
+                image: 'https://images.unsplash.com/photo-1563565375-f3fdfdbefa83?auto=format&fit=crop&w=800&q=80',
+                description: 'Ớt chuông dày thịt, không cay, vị ngọt thanh giòn rụm, giàu vitamin C gấp 3 lần cam tươi.'
+            },
+            {
+                id: 'SP12',
+                sku: 'VG-TRA-012',
+                name: 'Dâu Tây Mộc Châu Chuẩn VietGAP',
+                category: 'Trái cây sạch',
+                unit: 'hộp (500g)',
+                costPrice: 65000,
+                sellPrice: 95000,
+                stock: 14,
+                origin: 'Vườn Dâu Chimi Farm, Mộc Châu',
+                cert: 'VietGAP #VG-242',
+                image: 'https://images.unsplash.com/photo-1464965911861-746a04b4bca6?auto=format&fit=crop&w=800&q=80',
+                description: 'Dâu tây giống Nhật trồng giá thể sạch tại Mộc Châu, quả căng mọng, thơm lừng, ngọt thanh.'
+            }
+        ];
+
+        const INITIAL_LOGS = [
+            {
+                id: 'PN-261101',
+                time: '18/11/2026 05:30',
+                type: 'IMPORT',
+                productId: 'SP01',
+                productName: 'Cải Bó Xôi (Rau Chân Vịt) Hữu Cơ',
+                sku: 'VG-RAU-001',
+                qty: 40,
+                unit: 'túi (500g)',
+                unitPrice: 16000,
+                total: 640000,
+                partner: 'HTX Rau An Toàn Đặng Xá',
+                note: 'Nhập hàng tươi buổi sáng, đạt test nhanh VietGAP'
+            },
+            {
+                id: 'PN-261102',
+                time: '18/11/2026 06:00',
+                type: 'IMPORT',
+                productId: 'SP02',
+                productName: 'Cà Chua Bi Đỏ Mộc Châu',
+                sku: 'VG-CUQ-002',
+                qty: 45,
+                unit: 'hộp (500g)',
+                unitPrice: 18000,
+                total: 810000,
+                partner: 'Nông Trại Hữu Cơ Mộc Châu',
+                note: 'Xe lạnh giao tại 323 Dương Đức Hiền'
+            },
+            {
+                id: 'PX-261101',
+                time: '18/11/2026 09:15',
+                type: 'EXPORT',
+                productId: 'SP01',
+                productName: 'Cải Bó Xôi (Rau Chân Vịt) Hữu Cơ',
+                sku: 'VG-RAU-001',
+                qty: 5,
+                unit: 'túi (500g)',
+                unitPrice: 24000,
+                total: 120000,
+                partner: 'Đơn hàng #DH-1001 (Chị Minh Anh)',
+                note: 'Xuất bán giao hàng khu vực Thuận An'
+            }
+        ];
+
+        const INITIAL_ORDERS = [
+            {
+                id: 'DH-1001',
+                time: '18/11/2026 09:15',
+                customerName: 'Trần Thị Minh Anh',
+                phone: '0987654321',
+                address: 'Số 28 Dương Đức Hiền, Thuận An, Hà Nội',
+                zoneLabel: 'Thuận An / Dương Đức Hiền',
+                slot: 'Giao nhanh trong 2 giờ',
+                payment: 'COD',
+                items: [
+                    { id: 'SP01', name: 'Cải Bó Xôi (Rau Chân Vịt) Hữu Cơ', qty: 3, price: 24000, unit: 'túi (500g)' },
+                    { id: 'SP02', name: 'Cà Chua Bi Đỏ Mộc Châu', qty: 2, price: 28000, unit: 'hộp (500g)' }
+                ],
+                subtotal: 128000,
+                shippingFee: 0,
+                total: 128000,
+                status: 'Hoàn thành'
+            }
+        ];
+
+        // -------------------------------------------------------------------
+        // 2. APPLICATION STATE & STORAGE MANAGEMENT
+        // -------------------------------------------------------------------
+        const STORAGE_KEYS = {
+            PRODUCTS: 'rstl_products_v1',
+            LOGS: 'rstl_logs_v1',
+            ORDERS: 'rstl_orders_v1',
+            CART: 'rstl_cart_v1'
+        };
+
+        let state = {
+            products: [],
+            logs: [],
+            orders: [],
+            cart: [], // [{ productId, qty }]
+            activeCategory: 'Tất cả',
+            searchQuery: '',
+            currentView: 'store', // 'store' | 'admin'
+            adminTab: 'inventory', // 'inventory' | 'logs' | 'orders'
+            logFilter: 'ALL'
+        };
+
+        function loadState() {
+            try {
+                const savedProducts = localStorage.getItem(STORAGE_KEYS.PRODUCTS);
+                const savedLogs = localStorage.getItem(STORAGE_KEYS.LOGS);
+                const savedOrders = localStorage.getItem(STORAGE_KEYS.ORDERS);
+                const savedCart = localStorage.getItem(STORAGE_KEYS.CART);
+
+                state.products = savedProducts ? JSON.parse(savedProducts) : JSON.parse(JSON.stringify(INITIAL_PRODUCTS));
+                state.logs = savedLogs ? JSON.parse(savedLogs) : JSON.parse(JSON.stringify(INITIAL_LOGS));
+                state.orders = savedOrders ? JSON.parse(savedOrders) : JSON.parse(JSON.stringify(INITIAL_ORDERS));
+                state.cart = savedCart ? JSON.parse(savedCart) : [];
+            } catch (e) {
+                console.error('Lỗi đọc localStorage:', e);
+                state.products = JSON.parse(JSON.stringify(INITIAL_PRODUCTS));
+                state.logs = JSON.parse(JSON.stringify(INITIAL_LOGS));
+                state.orders = JSON.parse(JSON.stringify(INITIAL_ORDERS));
+                state.cart = [];
+            }
+        }
+
+        function saveState() {
+            try {
+                localStorage.setItem(STORAGE_KEYS.PRODUCTS, JSON.stringify(state.products));
+                localStorage.setItem(STORAGE_KEYS.LOGS, JSON.stringify(state.logs));
+                localStorage.setItem(STORAGE_KEYS.ORDERS, JSON.stringify(state.orders));
+                localStorage.setItem(STORAGE_KEYS.CART, JSON.stringify(state.cart));
+            } catch (e) {
+                console.error('Lỗi lưu localStorage:', e);
+            }
+        }
+
+        // -------------------------------------------------------------------
+        // 3. UTILITIES (FORMAT CURRENCY, TIME, TOAST)
+        // -------------------------------------------------------------------
+        function formatVND(amount) {
+            return new Intl.NumberFormat('vi-VN').format(amount) + 'đ';
+        }
+
+        function getCurrentTimeString() {
+            const now = new Date();
+            const dd = String(now.getDate()).padStart(2, '0');
+            const mm = String(now.getMonth() + 1).padStart(2, '0');
+            const yyyy = now.getFullYear();
+            const hh = String(now.getHours()).padStart(2, '0');
+            const min = String(now.getMinutes()).padStart(2, '0');
+            return `${dd}/${mm}/${yyyy} ${hh}:${min}`;
+        }
+
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            const colors = {
+                success: 'bg-slate-900 text-white border-l-4 border-brand-500',
+                error: 'bg-rose-900 text-white border-l-4 border-rose-400',
+                warning: 'bg-amber-900 text-white border-l-4 border-amber-400'
+            };
+            const icons = {
+                success: 'check-circle-2',
+                error: 'alert-circle',
+                warning: 'alert-triangle'
+            };
+
+            toast.className = `pointer-events-auto p-3.5 rounded-xl shadow-xl flex items-center gap-3 text-sm font-medium fade-in ${colors[type] || colors.success}`;
+            toast.innerHTML = `
+                <i data-lucide="${icons[type] || 'info'}" class="w-5 h-5 shrink-0 ${type === 'success' ? 'text-brand-400' : 'text-amber-300'}"></i>
+                <span class="flex-1">${message}</span>
+            `;
+            container.appendChild(toast);
+            lucide.createIcons({ root: toast });
+
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(8px)';
+                toast.style.transition = 'all 0.25s ease';
+                setTimeout(() => toast.remove(), 250);
+            }, 3200);
+        }
+
+        // -------------------------------------------------------------------
+        // 4. VIEW & NAVIGATION CONTROLLER
+        // -------------------------------------------------------------------
+        function switchView(viewName) {
+            state.currentView = viewName;
+            const storeView = document.getElementById('storeView');
+            const adminView = document.getElementById('adminView');
+            const navStoreBtn = document.getElementById('navStoreBtn');
+            const navAdminBtn = document.getElementById('navAdminBtn');
+            const desktopSearch = document.getElementById('desktopSearchWrap');
+            const mobileSearch = document.getElementById('mobileSearchWrap');
+
+            if (viewName === 'store') {
+                storeView.classList.remove('hidden');
+                adminView.classList.add('hidden');
+                navStoreBtn.className = 'px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all flex items-center gap-1.5 bg-white text-brand-700 shadow-sm';
+                navAdminBtn.className = 'px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all flex items-center gap-1.5 text-slate-600 hover:text-slate-900';
+                desktopSearch.classList.remove('md:hidden');
+                mobileSearch.classList.remove('hidden');
+                renderStoreProducts();
+            } else {
+                storeView.classList.add('hidden');
+                adminView.classList.remove('hidden');
+                navAdminBtn.className = 'px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all flex items-center gap-1.5 bg-white text-brand-700 shadow-sm';
+                navStoreBtn.className = 'px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all flex items-center gap-1.5 text-slate-600 hover:text-slate-900';
+                desktopSearch.classList.add('md:hidden');
+                mobileSearch.classList.add('hidden');
+                renderAdminDashboard();
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function switchAdminTab(tabName) {
+            state.adminTab = tabName;
+            const tabs = ['inventory', 'logs', 'orders'];
+            tabs.forEach(t => {
+                const btn = document.getElementById(`tab${t.charAt(0).toUpperCase() + t.slice(1)}Btn`);
+                const panel = document.getElementById(`adminTab${t.charAt(0).toUpperCase() + t.slice(1)}`);
+                if (t === tabName) {
+                    btn.className = 'py-4 text-sm font-bold border-b-2 border-brand-600 text-brand-700 whitespace-nowrap flex items-center gap-2';
+                    panel.classList.remove('hidden');
+                } else {
+                    btn.className = 'py-4 text-sm font-semibold border-b-2 border-transparent text-slate-500 hover:text-slate-800 whitespace-nowrap flex items-center gap-2';
+                    panel.classList.add('hidden');
+                }
+            });
+
+            if (tabName === 'inventory') renderAdminInventory();
+            if (tabName === 'logs') renderAdminLogs();
+            if (tabName === 'orders') renderAdminOrders();
+        }
+
+        // -------------------------------------------------------------------
+        // 5. STOREFRONT RENDERING & INTERACTIONS
+        // -------------------------------------------------------------------
+        function renderCategoryFilters() {
+            const categories = ['Tất cả', 'Rau ăn lá', 'Củ quả', 'Gia vị & Rau thơm', 'Trái cây sạch'];
+            const container = document.getElementById('categoryFilters');
+            container.innerHTML = categories.map(cat => {
+                const isActive = state.activeCategory === cat;
+                return `
+                    <button onclick="selectCategory('${cat}')" class="px-4 py-2 rounded-full text-xs sm:text-sm font-semibold whitespace-nowrap transition-all ${
+                        isActive
+                            ? 'bg-brand-600 text-white shadow-md shadow-brand-600/20'
+                            : 'bg-white text-slate-600 hover:bg-brand-50 hover:text-brand-700 border border-slate-200'
+                    }">
+                        ${cat}
+                    </button>
+                `;
+            }).join('');
+        }
+
+        function selectCategory(category) {
+            state.activeCategory = category;
+            renderCategoryFilters();
+            renderStoreProducts();
+        }
+
+        function handleSearch(val) {
+            state.searchQuery = val.trim().toLowerCase();
+            // Sync desktop and mobile inputs
+            document.getElementById('searchInputDesktop').value = val;
+            document.getElementById('searchInputMobile').value = val;
+            renderStoreProducts();
+        }
+
+        function resetStoreFilters() {
+            state.activeCategory = 'Tất cả';
+            state.searchQuery = '';
+            document.getElementById('searchInputDesktop').value = '';
+            document.getElementById('searchInputMobile').value = '';
+            renderCategoryFilters();
+            renderStoreProducts();
+        }
+
+        function renderStoreProducts() {
+            const grid = document.getElementById('productGrid');
+            const emptyState = document.getElementById('emptyStoreState');
+
+            const filtered = state.products.filter(p => {
+                const matchCat = state.activeCategory === 'Tất cả' || p.category === state.activeCategory;
+                const matchQuery = !state.searchQuery ||
+                    p.name.toLowerCase().includes(state.searchQuery) ||
+                    p.category.toLowerCase().includes(state.searchQuery) ||
+                    p.origin.toLowerCase().includes(state.searchQuery);
+                return matchCat && matchQuery;
+            });
+
+            if (filtered.length === 0) {
+                grid.innerHTML = '';
+                emptyState.classList.remove('hidden');
+                return;
+            }
+
+            emptyState.classList.add('hidden');
+            grid.innerHTML = filtered.map(product => {
+                const isOutOfStock = product.stock <= 0;
+                const isLowStock = product.stock > 0 && product.stock < 10;
+                const inCartItem = state.cart.find(c => c.productId === product.id);
+                const inCartQty = inCartItem ? inCartItem.qty : 0;
+
+                return `
+                    <div class="group bg-white rounded-2xl border border-slate-200/90 overflow-hidden shadow-xs hover:shadow-xl hover:border-brand-300 transition-all duration-300 flex flex-col">
+                        <!-- Image Container -->
+                        <div class="relative aspect-[4/3] overflow-hidden bg-slate-100 cursor-pointer" onclick="openProductDetail('${product.id}')">
+                            <img src="${product.image}" alt="${product.name}" onerror="this.src='https://placehold.co/600x450/dcfce7/166534?text=Rau+Sach+VietGAP'" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ${isOutOfStock ? 'grayscale opacity-60' : ''}">
+                            
+                            <!-- VietGAP Badge -->
+                            <div class="absolute top-3 left-3 px-2.5 py-1 rounded-lg bg-brand-600/95 text-white text-[11px] font-bold shadow-sm flex items-center gap-1 backdrop-blur-xs">
+                                <i data-lucide="shield-check" class="w-3.5 h-3.5"></i>
+                                <span>Chuẩn VietGAP</span>
+                            </div>
+
+                            <!-- Stock Status Badge -->
+                            <div class="absolute top-3 right-3">
+                                ${isOutOfStock
+                                    ? `<span class="px-2.5 py-1 rounded-lg bg-rose-600 text-white text-[11px] font-bold shadow-sm">Tạm hết hàng</span>`
+                                    : isLowStock
+                                        ? `<span class="px-2.5 py-1 rounded-lg bg-amber-500 text-slate-950 text-[11px] font-bold shadow-sm">Sắp hết (Còn ${product.stock})</span>`
+                                        : `<span class="px-2.5 py-1 rounded-lg bg-white/95 text-slate-700 text-[11px] font-semibold shadow-sm backdrop-blur-xs">Kho còn: ${product.stock}</span>`
+                                }
+                            </div>
+
+                            <!-- Quick View Overlay -->
+                            <div class="absolute inset-x-0 bottom-0 p-3 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex justify-between items-center text-white text-xs">
+                                <span class="truncate max-w-[75%]"><i data-lucide="map-pin" class="w-3 h-3 inline mr-1"></i>${product.origin.split(',')[0]}</span>
+                                <span class="underline font-semibold">Chi tiết</span>
+                            </div>
+                        </div>
+
+                        <!-- Card Content -->
+                        <div class="p-4 flex-1 flex flex-col justify-between">
+                            <div>
+                                <div class="text-[11px] font-semibold text-brand-600 uppercase tracking-wide mb-1">${product.category}</div>
+                                <h3 onclick="openProductDetail('${product.id}')" class="font-bold text-slate-900 text-base leading-snug hover:text-brand-700 cursor-pointer line-clamp-2">
+                                    ${product.name}
+                                </h3>
+                                <p class="text-xs text-slate-500 mt-1.5 line-clamp-2">${product.description}</p>
+                            </div>
+
+                            <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between gap-2">
+                                <div>
+                                    <div class="text-lg font-extrabold text-brand-700">${formatVND(product.sellPrice)}</div>
+                                    <div class="text-[11px] text-slate-400">Đơn vị: ${product.unit}</div>
+                                </div>
+
+                                ${isOutOfStock
+                                    ? `<button disabled class="px-3.5 py-2.5 rounded-xl bg-slate-100 text-slate-400 text-xs font-bold cursor-not-allowed">Hết hàng</button>`
+                                    : `<button onclick="addToCart('${product.id}', 1)" class="px-3.5 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 active:scale-95 text-white text-xs font-bold shadow-sm shadow-brand-600/20 transition flex items-center gap-1.5">
+                                        <i data-lucide="plus" class="w-4 h-4"></i>
+                                        <span>${inCartQty > 0 ? `Thêm (${inCartQty})` : 'Thêm giỏ'}</span>
+                                       </button>`
+                                }
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            lucide.createIcons({ root: grid });
+        }
+
+        function openProductDetail(productId) {
+            const p = state.products.find(item => item.id === productId);
+            if (!p) return;
+            const isOutOfStock = p.stock <= 0;
+
+            const content = document.getElementById('productDetailContent');
+            content.innerHTML = `
+                <div class="grid grid-cols-1 md:grid-cols-2">
+                    <div class="relative h-64 md:h-full bg-slate-100">
+                        <img src="${p.image}" alt="${p.name}" onerror="this.src='https://placehold.co/600x600/dcfce7/166534?text=Rau+Sach'" class="w-full h-full object-cover">
+                        <span class="absolute top-4 left-4 px-3 py-1 rounded-full bg-brand-600 text-white text-xs font-bold shadow">
+                            ${p.cert}
+                        </span>
+                    </div>
+                    <div class="p-6 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-start justify-between gap-2">
+                                <span class="text-xs font-bold text-brand-600 uppercase">${p.category} • Mã: ${p.sku}</span>
+                                <button onclick="closeModal('productDetailModal')" class="p-1.5 rounded-lg hover:bg-slate-100 text-slate-400">
+                                    <i data-lucide="x" class="w-5 h-5"></i>
+                                </button>
+                            </div>
+                            <h3 class="text-xl font-extrabold text-slate-900 mt-1">${p.name}</h3>
+                            <div class="text-2xl font-extrabold text-brand-700 mt-2">
+                                ${formatVND(p.sellPrice)} <span class="text-xs font-normal text-slate-500">/ ${p.unit}</span>
+                            </div>
+
+                            <p class="text-sm text-slate-600 mt-3 leading-relaxed">${p.description}</p>
+
+                            <div class="mt-4 p-3.5 rounded-2xl bg-brand-50/80 border border-brand-100 space-y-2 text-xs">
+                                <div class="flex items-center gap-2 text-brand-900 font-semibold">
+                                    <i data-lucide="sprout" class="w-4 h-4 text-brand-600 shrink-0"></i>
+                                    <span>Nguồn gốc: ${p.origin}</span>
+                                </div>
+                                <div class="flex items-center gap-2 text-slate-700">
+                                    <i data-lucide="warehouse" class="w-4 h-4 text-brand-600 shrink-0"></i>
+                                    <span>Tồn kho tại 323 Dương Đức Hiền: <strong>${p.stock} ${p.unit}</strong></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-6 pt-4 border-t border-slate-100 flex items-center gap-3">
+                            ${isOutOfStock
+                                ? `<button disabled class="w-full py-3 rounded-xl bg-slate-200 text-slate-500 font-bold text-sm cursor-not-allowed">Sản phẩm tạm hết hàng</button>`
+                                : `<button onclick="addToCart('${p.id}', 1); closeModal('productDetailModal');" class="w-full py-3 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm shadow-lg shadow-brand-600/20 transition flex items-center justify-center gap-2">
+                                    <i data-lucide="shopping-basket" class="w-5 h-5"></i>
+                                    <span>Thêm Vào Giỏ Hàng</span>
+                                   </button>`
+                            }
+                        </div>
+                    </div>
+                </div>
+            `;
+            openModal('productDetailModal');
+            lucide.createIcons({ root: content });
+        }
+
+        // -------------------------------------------------------------------
+        // 6. CART & DELIVERY CHECKOUT LOGIC
+        // -------------------------------------------------------------------
+        function addToCart(productId, qtyToAdd = 1) {
+            const product = state.products.find(p => p.id === productId);
+            if (!product) return;
+
+            if (product.stock <= 0) {
+                showToast('Sản phẩm này hiện đã hết hàng trong kho!', 'error');
+                return;
+            }
+
+            const existing = state.cart.find(item => item.productId === productId);
+            const currentQty = existing ? existing.qty : 0;
+
+            if (currentQty + qtyToAdd > product.stock) {
+                showToast(`Kho chỉ còn tối đa ${product.stock} ${product.unit} "${product.name}"!`, 'warning');
+                return;
+            }
+
+            if (existing) {
+                existing.qty += qtyToAdd;
+            } else {
+                state.cart.push({ productId, qty: qtyToAdd });
+            }
+
+            saveState();
+            updateCartBadge();
+            renderStoreProducts();
+            renderCartDrawer();
+            showToast(`Đã thêm ${product.name} vào giỏ hàng!`);
+        }
+
+        function updateCartItemQty(productId, delta) {
+            const index = state.cart.findIndex(item => item.productId === productId);
+            if (index === -1) return;
+
+            const product = state.products.find(p => p.id === productId);
+            const newQty = state.cart[index].qty + delta;
+
+            if (newQty <= 0) {
+                state.cart.splice(index, 1);
+            } else {
+                if (product && newQty > product.stock) {
+                    showToast(`Không thể vượt quá tồn kho (${product.stock} ${product.unit})!`, 'warning');
+                    return;
+                }
+                state.cart[index].qty = newQty;
+            }
+
+            saveState();
+            updateCartBadge();
+            renderStoreProducts();
+            renderCartDrawer();
+        }
+
+        function removeCartItem(productId) {
+            state.cart = state.cart.filter(item => item.productId !== productId);
+            saveState();
+            updateCartBadge();
+            renderStoreProducts();
+            renderCartDrawer();
+        }
+
+        function updateCartBadge() {
+            const totalItems = state.cart.reduce((sum, item) => sum + item.qty, 0);
+            document.getElementById('cartCountBadge').textContent = totalItems;
+        }
+
+        function toggleCartDrawer(open) {
+            const drawer = document.getElementById('cartDrawer');
+            const backdrop = document.getElementById('cartDrawerBackdrop');
+            if (open) {
+                renderCartDrawer();
+                backdrop.classList.remove('hidden');
+                setTimeout(() => drawer.classList.remove('translate-x-full'), 10);
+            } else {
+                drawer.classList.add('translate-x-full');
+                setTimeout(() => backdrop.classList.add('hidden'), 280);
+            }
+        }
+
+        function renderCartDrawer() {
+            const container = document.getElementById('cartItemsContainer');
+            const checkoutForm = document.getElementById('checkoutForm');
+
+            // Clean up any cart items whose product no longer exists or has 0 stock
+            state.cart = state.cart.filter(c => {
+                const p = state.products.find(prod => prod.id === c.productId);
+                return p && p.stock > 0;
+            });
+
+            if (state.cart.length === 0) {
+                checkoutForm.classList.add('hidden');
+                container.innerHTML = `
+                    <div class="text-center py-14">
+                        <div class="w-16 h-16 rounded-full bg-brand-50 text-brand-500 flex items-center justify-center mx-auto mb-3">
+                            <i data-lucide="shopping-basket" class="w-8 h-8"></i>
+                        </div>
+                        <h4 class="font-bold text-slate-800">Giỏ hàng của bạn đang trống</h4>
+                        <p class="text-xs text-slate-500 mt-1 mb-5">Hãy chọn những loại rau củ quả tươi sạch chuẩn VietGAP nhé!</p>
+                        <button onclick="toggleCartDrawer(false)" class="px-5 py-2.5 rounded-xl bg-brand-600 text-white text-xs font-bold hover:bg-brand-700 transition">
+                            Tiếp Tục Chọn Rau Sạch
+                        </button>
+                    </div>
+                `;
+                lucide.createIcons({ root: container });
+                return;
+            }
+
+            checkoutForm.classList.remove('hidden');
+            container.innerHTML = state.cart.map(item => {
+                const p = state.products.find(prod => prod.id === item.productId);
+                if (!p) return '';
+                return `
+                    <div class="flex items-center gap-3 p-3 rounded-2xl bg-slate-50 border border-slate-200/80">
+                        <img src="${p.image}" alt="${p.name}" class="w-16 h-16 rounded-xl object-cover shrink-0 bg-white">
+                        <div class="flex-1 min-w-0">
+                            <h5 class="font-bold text-slate-900 text-xs sm:text-sm truncate">${p.name}</h5>
+                            <div class="text-xs text-brand-700 font-bold mt-0.5">${formatVND(p.sellPrice)} <span class="text-slate-400 font-normal">/ ${p.unit}</span></div>
+                            <div class="flex items-center justify-between mt-2">
+                                <div class="inline-flex items-center bg-white border border-slate-200 rounded-lg">
+                                    <button type="button" onclick="updateCartItemQty('${p.id}', -1)" class="px-2 py-1 text-slate-600 hover:text-brand-700 font-bold text-xs">-</button>
+                                    <span class="px-2.5 py-1 text-xs font-extrabold text-slate-900">${item.qty}</span>
+                                    <button type="button" onclick="updateCartItemQty('${p.id}', 1)" class="px-2 py-1 text-slate-600 hover:text-brand-700 font-bold text-xs">+</button>
+                                </div>
+                                <button type="button" onclick="removeCartItem('${p.id}')" class="text-slate-400 hover:text-rose-600 p-1">
+                                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            lucide.createIcons({ root: container });
+            updateCartSummary();
+        }
+
+        function updateCartSummary() {
+            const subtotal = state.cart.reduce((sum, item) => {
+                const p = state.products.find(prod => prod.id === item.productId);
+                return sum + (p ? p.sellPrice * item.qty : 0);
+            }, 0);
+
+            const zone = document.getElementById('deliveryZone').value;
+            let shippingFee = 0;
+
+            if (zone === 'thuan_an' || subtotal >= 200000) {
+                shippingFee = 0;
+            } else if (zone === 'gia_lam') {
+                shippingFee = 15000;
+            } else {
+                shippingFee = 25000;
+            }
+
+            document.getElementById('summarySubtotal').textContent = formatVND(subtotal);
+            document.getElementById('summaryShipping').textContent = shippingFee === 0 ? 'Miễn phí (0đ)' : formatVND(shippingFee);
+            document.getElementById('summaryTotal').textContent = formatVND(subtotal + shippingFee);
+
+            const hintEl = document.getElementById('freeShipHint');
+            if (zone !== 'thuan_an' && subtotal < 200000 && subtotal > 0) {
+                hintEl.classList.remove('hidden');
+                document.getElementById('freeShipRemain').textContent = formatVND(200000 - subtotal);
+            } else {
+                hintEl.classList.add('hidden');
+            }
+        }
+
+        function togglePaymentQR() {
+            const method = document.getElementById('paymentMethod').value;
+            const qrBox = document.getElementById('qrPaymentBox');
+            if (method === 'QR') {
+                qrBox.classList.remove('hidden');
+            } else {
+                qrBox.classList.add('hidden');
+            }
+        }
+
+        function submitOrder(event) {
+            event.preventDefault();
+            if (state.cart.length === 0) return;
+
+            // Validate stock once more before finalizing
+            for (const item of state.cart) {
+                const p = state.products.find(prod => prod.id === item.productId);
+                if (!p || p.stock < item.qty) {
+                    showToast(`Sản phẩm "${p ? p.name : ''}" không đủ tồn kho để đặt!`, 'error');
+                    return;
+                }
+            }
+
+            const custName = document.getElementById('custName').value.trim();
+            const custPhone = document.getElementById('custPhone').value.trim();
+            const custAddress = document.getElementById('custAddress').value.trim();
+            const zoneSelect = document.getElementById('deliveryZone');
+            const zoneLabel = zoneSelect.options[zoneSelect.selectedIndex].text.split('(')[0].trim();
+            const slot = document.getElementById('deliverySlot').value;
+            const payment = document.getElementById('paymentMethod').value;
+
+            const orderId = 'DH-' + (1001 + state.orders.length);
+            const nowStr = getCurrentTimeString();
+            let subtotal = 0;
+            const orderItems = [];
+
+            // Deduct stock & create EXPORT logs for each item
+            state.cart.forEach((cartItem, idx) => {
+                const product = state.products.find(p => p.id === cartItem.productId);
+                product.stock -= cartItem.qty;
+                const lineTotal = product.sellPrice * cartItem.qty;
+                subtotal += lineTotal;
+
+                orderItems.push({
+                    id: product.id,
+                    name: product.name,
+                    qty: cartItem.qty,
+                    price: product.sellPrice,
+                    unit: product.unit
+                });
+
+                // Auto record stock export log
+                state.logs.unshift({
+                    id: `PX-${Date.now().toString().slice(-5)}${idx}`,
+                    time: nowStr,
+                    type: 'EXPORT',
+                    productId: product.id,
+                    productName: product.name,
+                    sku: product.sku,
+                    qty: cartItem.qty,
+                    unit: product.unit,
+                    unitPrice: product.sellPrice,
+                    total: lineTotal,
+                    partner: `Đơn ${orderId} (${custName})`,
+                    note: `Xuất bán online - Giao ${zoneLabel}`
+                });
+            });
+
+            const zoneVal = zoneSelect.value;
+            const shippingFee = (zoneVal === 'thuan_an' || subtotal >= 200000) ? 0 : (zoneVal === 'gia_lam' ? 15000 : 25000);
+            const grandTotal = subtotal + shippingFee;
+
+            const newOrder = {
+                id: orderId,
+                time: nowStr,
+                customerName: custName,
+                phone: custPhone,
+                address: custAddress,
+                zoneLabel,
+                slot,
+                payment,
+                items: orderItems,
+                subtotal,
+                shippingFee,
+                total: grandTotal,
+                status: 'Chờ xác nhận'
+            };
+
+            state.orders.unshift(newOrder);
+            state.cart = [];
+            saveState();
+
+            // Refresh UI
+            updateCartBadge();
+            updateLowStockHeaderBadge();
+            renderStoreProducts();
+            toggleCartDrawer(false);
+            showInvoiceModal(newOrder);
+            showToast(`Đặt hàng thành công! Mã đơn ${orderId}`);
+        }
+
+        function showInvoiceModal(order) {
+            const content = document.getElementById('invoiceContent');
+            content.innerHTML = `
+                <div class="bg-brand-600 text-white p-6 text-center">
+                    <div class="w-14 h-14 rounded-full bg-white/20 flex items-center justify-center mx-auto mb-3">
+                        <i data-lucide="check-circle-2" class="w-8 h-8 text-white"></i>
+                    </div>
+                    <h3 class="text-xl font-extrabold">Đặt Hàng Thành Công!</h3>
+                    <p class="text-xs text-brand-100 mt-1">Kho 323 Dương Đức Hiền đã tiếp nhận & trừ tồn kho tự động</p>
+                </div>
+
+                <div class="p-6 space-y-4 text-sm">
+                    <div class="flex justify-between items-center bg-slate-50 p-3.5 rounded-2xl border border-slate-200">
+                        <div>
+                            <div class="text-xs text-slate-500">Mã đơn hàng của bạn</div>
+                            <div class="font-mono font-extrabold text-lg text-brand-700">${order.id}</div>
+                        </div>
+                        <span class="px-3 py-1 rounded-full bg-amber-100 text-amber-800 text-xs font-bold">${order.status}</span>
+                    </div>
+
+                    <div class="space-y-1.5 text-xs text-slate-600 border-b border-slate-100 pb-3">
+                        <div><strong class="text-slate-800">Người nhận:</strong> ${order.customerName} (${order.phone})</div>
+                        <div><strong class="text-slate-800">Địa chỉ giao:</strong> ${order.address}</div>
+                        <div><strong class="text-slate-800">Khung giờ:</strong> ${order.slot} • <strong class="text-slate-800">TT:</strong> ${order.payment}</div>
+                    </div>
+
+                    <div class="space-y-2 max-h-40 overflow-y-auto">
+                        ${order.items.map(it => `
+                            <div class="flex justify-between text-xs">
+                                <span class="text-slate-700">${it.name} <strong class="text-slate-900">x${it.qty}</strong></span>
+                                <span class="font-semibold text-slate-900">${formatVND(it.price * it.qty)}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+
+                    <div class="border-t border-slate-200 pt-3 space-y-1 text-xs">
+                        <div class="flex justify-between text-slate-500">
+                            <span>Phí vận chuyển:</span>
+                            <span>${order.shippingFee === 0 ? 'Miễn phí' : formatVND(order.shippingFee)}</span>
+                        </div>
+                        <div class="flex justify-between text-base font-extrabold text-slate-900 pt-1">
+                            <span>Tổng cộng:</span>
+                            <span class="text-brand-700">${formatVND(order.total)}</span>
+                        </div>
+                    </div>
+
+                    <button onclick="closeModal('invoiceModal')" class="w-full py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-sm transition">
+                        Hoàn Tất
+                    </button>
+                </div>
+            `;
+            openModal('invoiceModal');
+            lucide.createIcons({ root: content });
+        }
+
+        // -------------------------------------------------------------------
+        // 7. ORDER LOOKUP FEATURE (TRA CỨU ĐƠN HÀNG)
+        // -------------------------------------------------------------------
+        function performOrderLookup() {
+            const q = document.getElementById('lookupQueryInput').value.trim().toLowerCase();
+            const resultsDiv = document.getElementById('lookupResults');
+
+            const matches = state.orders.filter(o =>
+                !q || o.id.toLowerCase().includes(q) || o.phone.includes(q) || o.customerName.toLowerCase().includes(q)
+            );
+
+            if (matches.length === 0) {
+                resultsDiv.innerHTML = `<div class="text-center py-6 text-xs text-slate-500">Không tìm thấy đơn hàng nào khớp với "${q}".</div>`;
+                return;
+            }
+
+            resultsDiv.innerHTML = matches.map(o => `
+                <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 text-xs space-y-1.5">
+                    <div class="flex justify-between items-center">
+                        <span class="font-mono font-extrabold text-brand-700 text-sm">${o.id}</span>
+                        <span class="px-2.5 py-0.5 rounded-full font-bold ${
+                            o.status === 'Hoàn thành' ? 'bg-brand-100 text-brand-800' :
+                            o.status === 'Đang giao' ? 'bg-blue-100 text-blue-800' : 'bg-amber-100 text-amber-800'
+                        }">${o.status}</span>
+                    </div>
+                    <div class="text-slate-700 font-semibold">${o.customerName} • ${o.phone}</div>
+                    <div class="text-slate-500">${o.address}</div>
+                    <div class="text-slate-600 pt-1 border-t border-slate-200/70 flex justify-between">
+                        <span>${o.items.length} mặt hàng • ${o.time}</span>
+                        <span class="font-bold text-slate-900">${formatVND(o.total)}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // -------------------------------------------------------------------
+        // 8. WAREHOUSE & INVENTORY ADMIN DASHBOARD
+        // -------------------------------------------------------------------
+        function updateLowStockHeaderBadge() {
+            const lowCount = state.products.filter(p => p.stock < 10).length;
+            const badge = document.getElementById('lowStockBadgeHeader');
+            if (lowCount > 0) {
+                badge.textContent = lowCount;
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+        }
+
+        function renderAdminDashboard() {
+            // Update KPI Cards
+            const totalItems = state.products.length;
+            const totalUnits = state.products.reduce((s, p) => s + p.stock, 0);
+            const inventoryValue = state.products.reduce((s, p) => s + (p.stock * p.costPrice), 0);
+            const lowStockCount = state.products.filter(p => p.stock < 10).length;
+            const totalRevenue = state.orders.reduce((s, o) => s + o.total, 0);
+
+            document.getElementById('kpiTotalItems').textContent = `${totalItems} loại`;
+            document.getElementById('kpiTotalWeight').textContent = `Tổng lượng tồn: ${totalUnits} đơn vị`;
+            document.getElementById('kpiInventoryValue').textContent = formatVND(inventoryValue);
+            document.getElementById('kpiLowStock').textContent = `${lowStockCount} mặt hàng`;
+            document.getElementById('kpiRevenue').textContent = formatVND(totalRevenue);
+            document.getElementById('kpiOrderCount').textContent = `${state.orders.length} đơn đặt hàng`;
+
+            const pendingOrders = state.orders.filter(o => o.status !== 'Hoàn thành').length;
+            document.getElementById('pendingOrdersBadge').textContent = pendingOrders;
+
+            updateLowStockHeaderBadge();
+            switchAdminTab(state.adminTab);
+        }
+
+        function renderAdminInventory(filterText = '') {
+            const tbody = document.getElementById('adminInventoryBody');
+            const q = filterText.trim().toLowerCase();
+
+            const list = state.products.filter(p =>
+                !q || p.name.toLowerCase().includes(q) || p.sku.toLowerCase().includes(q) || p.category.toLowerCase().includes(q)
+            );
+
+            tbody.innerHTML = list.map(p => {
+                let statusBadge = '';
+                if (p.stock <= 0) {
+                    statusBadge = `<span class="px-2.5 py-1 rounded-full bg-rose-100 text-rose-700 text-xs font-bold">Hết hàng</span>`;
+                } else if (p.stock < 10) {
+                    statusBadge = `<span class="px-2.5 py-1 rounded-full bg-amber-100 text-amber-800 text-xs font-bold">Sắp hết</span>`;
+                } else {
+                    statusBadge = `<span class="px-2.5 py-1 rounded-full bg-brand-100 text-brand-800 text-xs font-bold">Sẵn hàng</span>`;
+                }
+
+                return `
+                    <tr class="hover:bg-slate-50/80 transition">
+                        <td class="py-3.5 px-4 font-mono text-xs font-bold text-slate-600">${p.sku}</td>
+                        <td class="py-3.5 px-4">
+                            <div class="flex items-center gap-3">
+                                <img src="${p.image}" alt="${p.name}" class="w-10 h-10 rounded-lg object-cover bg-slate-100 shrink-0">
+                                <div>
+                                    <div class="font-bold text-slate-900">${p.name}</div>
+                                    <div class="text-[11px] text-slate-400">ĐVT: ${p.unit}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="py-3.5 px-4 text-xs font-medium text-slate-600">${p.category}</td>
+                        <td class="py-3.5 px-4 text-right text-slate-600">${formatVND(p.costPrice)}</td>
+                        <td class="py-3.5 px-4 text-right font-bold text-brand-700">${formatVND(p.sellPrice)}</td>
+                        <td class="py-3.5 px-4 text-center font-extrabold text-base ${p.stock < 10 ? 'text-amber-600' : 'text-slate-900'}">
+                            ${p.stock}
+                        </td>
+                        <td class="py-3.5 px-4 text-center">${statusBadge}</td>
+                        <td class="py-3.5 px-4 text-right whitespace-nowrap">
+                            <button onclick="openStockModal('import', '${p.id}')" class="px-2.5 py-1.5 rounded-lg bg-brand-50 hover:bg-brand-600 text-brand-700 hover:text-white text-xs font-bold transition mr-1">
+                                + Nhập
+                            </button>
+                            <button onclick="openStockModal('export', '${p.id}')" class="px-2.5 py-1.5 rounded-lg bg-amber-50 hover:bg-amber-600 text-amber-700 hover:text-white text-xs font-bold transition">
+                                - Xuất
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function filterStockLogs(type) {
+            state.logFilter = type;
+            ['ALL', 'IMPORT', 'EXPORT'].forEach(t => {
+                const btn = document.getElementById(`logFilter${t}`);
+                if (t === type) {
+                    btn.className = 'px-3.5 py-1.5 rounded-lg text-xs font-bold bg-slate-800 text-white';
+                } else {
+                    btn.className = 'px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200';
+                }
+            });
+            renderAdminLogs();
+        }
+
+        function renderAdminLogs() {
+            const tbody = document.getElementById('adminLogsBody');
+            const filtered = state.logs.filter(l => state.logFilter === 'ALL' || l.type === state.logFilter);
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-slate-400 text-sm">Chưa có lịch sử phiếu kho nào.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = filtered.map(log => {
+                const isImport = log.type === 'IMPORT';
+                return `
+                    <tr class="hover:bg-slate-50/80">
+                        <td class="py-3.5 px-4">
+                            <div class="font-mono text-xs font-bold text-slate-800">${log.id}</div>
+                            <div class="text-[11px] text-slate-400">${log.time}</div>
+                        </td>
+                        <td class="py-3.5 px-4">
+                            ${isImport
+                                ? `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-brand-100 text-brand-800 text-xs font-bold"><i data-lucide="arrow-down-left" class="w-3.5 h-3.5"></i> Nhập Kho</span>`
+                                : `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-100 text-amber-800 text-xs font-bold"><i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i> Xuất Kho</span>`
+                            }
+                        </td>
+                        <td class="py-3.5 px-4">
+                            <div class="font-bold text-slate-900">${log.productName}</div>
+                            <div class="text-[11px] text-slate-400 font-mono">${log.sku}</div>
+                        </td>
+                        <td class="py-3.5 px-4 text-center font-extrabold ${isImport ? 'text-brand-700' : 'text-amber-700'}">
+                            ${isImport ? '+' : '-'}${log.qty} <span class="text-xs font-normal text-slate-500">${log.unit}</span>
+                        </td>
+                        <td class="py-3.5 px-4 text-right font-bold text-slate-900">${formatVND(log.total)}</td>
+                        <td class="py-3.5 px-4">
+                            <div class="text-xs font-semibold text-slate-800">${log.partner}</div>
+                            <div class="text-[11px] text-slate-500">${log.note || '-'}</div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+            lucide.createIcons({ root: tbody });
+        }
+
+        function renderAdminOrders() {
+            const tbody = document.getElementById('adminOrdersBody');
+            if (state.orders.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="py-8 text-center text-slate-400 text-sm">Chưa có đơn hàng online nào.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = state.orders.map(order => `
+                <tr class="hover:bg-slate-50/80 align-top">
+                    <td class="py-4 px-4">
+                        <div class="font-mono font-extrabold text-brand-700">${order.id}</div>
+                        <div class="text-[11px] text-slate-400 mt-0.5">${order.time}</div>
+                        <span class="inline-block mt-1 px-2 py-0.5 rounded bg-slate-100 text-slate-600 text-[10px] font-bold">${order.payment}</span>
+                    </td>
+                    <td class="py-4 px-4">
+                        <div class="font-bold text-slate-900">${order.customerName}</div>
+                        <div class="text-xs text-slate-600">${order.phone}</div>
+                        <div class="text-xs text-slate-500 mt-1 max-w-xs">${order.address}</div>
+                        <div class="text-[11px] text-brand-700 font-medium mt-0.5">⏰ ${order.slot}</div>
+                    </td>
+                    <td class="py-4 px-4">
+                        <ul class="space-y-1 text-xs">
+                            ${order.items.map(it => `
+                                <li class="text-slate-700">• ${it.name} <strong class="text-slate-900">x${it.qty}</strong></li>
+                            `).join('')}
+                        </ul>
+                    </td>
+                    <td class="py-4 px-4 text-right">
+                        <div class="font-extrabold text-slate-900">${formatVND(order.total)}</div>
+                        <div class="text-[11px] text-slate-400">Ship: ${order.shippingFee === 0 ? '0đ' : formatVND(order.shippingFee)}</div>
+                    </td>
+                    <td class="py-4 px-4 text-center">
+                        <select onchange="updateOrderStatus('${order.id}', this.value)" class="px-3 py-1.5 rounded-xl text-xs font-bold border outline-none cursor-pointer ${
+                            order.status === 'Hoàn thành' ? 'bg-brand-50 text-brand-800 border-brand-200' :
+                            order.status === 'Đang giao' ? 'bg-blue-50 text-blue-800 border-blue-200' :
+                            'bg-amber-50 text-amber-800 border-amber-200'
+                        }">
+                            <option value="Chờ xác nhận" ${order.status === 'Chờ xác nhận' ? 'selected' : ''}>Chờ xác nhận</option>
+                            <option value="Đang giao" ${order.status === 'Đang giao' ? 'selected' : ''}>Đang giao hàng</option>
+                            <option value="Hoàn thành" ${order.status === 'Hoàn thành' ? 'selected' : ''}>Hoàn thành</option>
+                        </select>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function updateOrderStatus(orderId, newStatus) {
+            const order = state.orders.find(o => o.id === orderId);
+            if (!order) return;
+            order.status = newStatus;
+            saveState();
+            renderAdminDashboard();
+            showToast(`Đã cập nhật đơn ${orderId} sang "${newStatus}"`);
+        }
+
+        // -------------------------------------------------------------------
+        // 9. IMPORT / EXPORT STOCK ACTIONS & NEW PRODUCT CREATION
+        // -------------------------------------------------------------------
+        function openStockModal(type, preselectProductId = null) {
+            const isImport = type === 'import';
+            document.getElementById('stockActionType').value = type;
+            document.getElementById('stockModalTitle').textContent = isImport ? 'Phiếu Nhập Kho Từ Nhà Vườn' : 'Phiếu Xuất Kho (Bán Sỉ / Xuất Hủy)';
+            document.getElementById('stockPriceLabel').textContent = isImport ? 'Đơn giá nhập (VNĐ) *' : 'Đơn giá xuất (VNĐ) *';
+            document.getElementById('stockPartnerLabel').textContent = isImport ? 'Nhà cung cấp / HTX *' : 'Lý do xuất / Khách sỉ *';
+            document.getElementById('stockPartnerInput').value = isImport ? 'HTX Rau An Toàn Đặng Xá' : 'Xuất bán sỉ / Hủy hàng dập';
+            document.getElementById('stockQtyInput').value = '';
+            document.getElementById('stockNoteInput').value = '';
+
+            const submitBtn = document.getElementById('stockSubmitBtn');
+            submitBtn.textContent = isImport ? 'Xác Nhận Nhập Kho' : 'Xác Nhận Xuất Kho';
+            submitBtn.className = isImport
+                ? 'w-full py-3 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm shadow-md transition'
+                : 'w-full py-3 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-sm shadow-md transition';
+
+            const select = document.getElementById('stockProductSelect');
+            select.innerHTML = state.products.map(p => `
+                <option value="${p.id}" ${p.id === preselectProductId ? 'selected' : ''}>
+                    [${p.sku}] ${p.name} (Tồn: ${p.stock} ${p.unit})
+                </option>
+            `).join('');
+
+            onStockProductChange();
+            openModal('stockActionModal');
+        }
+
+        function onStockProductChange() {
+            const prodId = document.getElementById('stockProductSelect').value;
+            const type = document.getElementById('stockActionType').value;
+            const p = state.products.find(item => item.id === prodId);
+            if (!p) return;
+
+            document.getElementById('stockCurrentHint').textContent = `Tồn kho hiện tại: ${p.stock} ${p.unit}`;
+            document.getElementById('stockPriceInput').value = type === 'import' ? p.costPrice : p.sellPrice;
+        }
+
+        function submitStockAction(event) {
+            event.preventDefault();
+            const type = document.getElementById('stockActionType').value; // 'import' | 'export'
+            const prodId = document.getElementById('stockProductSelect').value;
+            const qty = parseInt(document.getElementById('stockQtyInput').value, 10);
+            const unitPrice = parseInt(document.getElementById('stockPriceInput').value, 10);
+            const partner = document.getElementById('stockPartnerInput').value.trim();
+            const note = document.getElementById('stockNoteInput').value.trim();
+
+            const product = state.products.find(p => p.id === prodId);
+            if (!product || qty <= 0) return;
+
+            if (type === 'export' && qty > product.stock) {
+                showToast(`Lỗi: Số lượng xuất (${qty}) lớn hơn tồn kho hiện tại (${product.stock})!`, 'error');
+                return;
+            }
+
+            if (type === 'import') {
+                product.stock += qty;
+                product.costPrice = unitPrice; // Update latest cost price
+            } else {
+                product.stock -= qty;
+            }
+
+            const logCode = (type === 'import' ? 'PN-' : 'PX-') + Date.now().toString().slice(-6);
+            state.logs.unshift({
+                id: logCode,
+                time: getCurrentTimeString(),
+                type: type === 'import' ? 'IMPORT' : 'EXPORT',
+                productId: product.id,
+                productName: product.name,
+                sku: product.sku,
+                qty,
+                unit: product.unit,
+                unitPrice,
+                total: qty * unitPrice,
+                partner,
+                note
+            });
+
+            saveState();
+            closeModal('stockActionModal');
+            renderAdminDashboard();
+            renderStoreProducts();
+            showToast(type === 'import'
+                ? `Đã nhập +${qty} ${product.unit} "${product.name}" vào kho!`
+                : `Đã xuất -${qty} ${product.unit} "${product.name}" khỏi kho!`
+            );
+        }
+
+        function openAddProductModal() {
+            openModal('addProductModal');
+        }
+
+        function submitNewProduct(event) {
+            event.preventDefault();
+            const name = document.getElementById('newProdName').value.trim();
+            const category = document.getElementById('newProdCategory').value;
+            const unit = document.getElementById('newProdUnit').value;
+            const costPrice = parseInt(document.getElementById('newProdCost').value, 10);
+            const sellPrice = parseInt(document.getElementById('newProdPrice').value, 10);
+            const stock = parseInt(document.getElementById('newProdStock').value, 10);
+            const origin = document.getElementById('newProdOrigin').value.trim();
+            const image = document.getElementById('newProdImg').value.trim() || 'https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=800&q=80';
+            const description = document.getElementById('newProdDesc').value.trim();
+
+            const nextNum = state.products.length + 1;
+            const newId = 'SP' + String(nextNum).padStart(2, '0');
+            const newSku = 'VG-NEW-' + String(nextNum).padStart(3, '0');
+
+            const newProd = {
+                id: newId,
+                sku: newSku,
+                name,
+                category,
+                unit,
+                costPrice,
+                sellPrice,
+                stock,
+                origin,
+                cert: `VietGAP #VG-${240 + nextNum}`,
+                image,
+                description
+            };
+
+            state.products.unshift(newProd);
+
+            if (stock > 0) {
+                state.logs.unshift({
+                    id: 'PN-' + Date.now().toString().slice(-6),
+                    time: getCurrentTimeString(),
+                    type: 'IMPORT',
+                    productId: newId,
+                    productName: name,
+                    sku: newSku,
+                    qty: stock,
+                    unit,
+                    unitPrice: costPrice,
+                    total: stock * costPrice,
+                    partner: origin,
+                    note: 'Khởi tạo mặt hàng mới vào kho'
+                });
+            }
+
+            saveState();
+            closeModal('addProductModal');
+            renderAdminDashboard();
+            renderStoreProducts();
+            showToast(`Đã thêm mặt hàng "${name}" vào cửa hàng & kho!`);
+        }
+
+        function confirmResetDemoData() {
+            openModal('resetConfirmModal');
+        }
+
+        function executeResetDemoData() {
+            localStorage.removeItem(STORAGE_KEYS.PRODUCTS);
+            localStorage.removeItem(STORAGE_KEYS.LOGS);
+            localStorage.removeItem(STORAGE_KEYS.ORDERS);
+            localStorage.removeItem(STORAGE_KEYS.CART);
+            loadState();
+            closeModal('resetConfirmModal');
+            updateCartBadge();
+            renderAdminDashboard();
+            renderStoreProducts();
+            showToast('Đã khôi phục toàn bộ dữ liệu mẫu ban đầu!');
+        }
+
+        // -------------------------------------------------------------------
+        // 10. MODAL HELPERS
+        // -------------------------------------------------------------------
+        function openModal(modalId) {
+            const el = document.getElementById(modalId);
+            el.classList.remove('hidden');
+            el.classList.add('flex');
+            if (modalId === 'lookupModal') {
+                performOrderLookup();
+            }
+            lucide.createIcons({ root: el });
+        }
+
+        function closeModal(modalId) {
+            const el = document.getElementById(modalId);
+            el.classList.add('hidden');
+            el.classList.remove('flex');
+        }
+
+        // -------------------------------------------------------------------
+        // 11. INITIALIZE APP ON WINDOW LOAD
+        // -------------------------------------------------------------------
+        window.onload = function () {
+            loadState();
+            renderCategoryFilters();
+            renderStoreProducts();
+            updateCartBadge();
+            updateLowStockHeaderBadge();
+            lucide.createIcons();
+        };
+    </script>
+</body>
+</html>
